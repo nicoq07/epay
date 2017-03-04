@@ -157,6 +157,9 @@ class CarterasController extends AppController
                       'provincia' => $worksheet->getCell('D'.$row)->getValue(),
                       'localidad' => $worksheet->getCell('E'.$row)->getValue(),
                       'active' => true,
+                      'laboral' => $worksheet->getCell('P'.$row)->getValue(),
+                      'cantidad' => $worksheet->getCell('Q'.$row)->getValue(),
+                      'categoria' => $worksheet->getCell('R'.$row)->getValue(),
                       'modified' => new \DateTime('now'),
                       'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
 

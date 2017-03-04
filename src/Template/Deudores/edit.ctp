@@ -5,7 +5,6 @@
         <legend><?= __('Editar deudor') ?></legend>
         <?php
             echo $this->Form->input('nombre');
-            echo $this->Form->input('apellido');
             echo $this->Form->input('calificacion');
             echo $this->Form->input('categoria');
             echo $this->Form->input('cantidad');

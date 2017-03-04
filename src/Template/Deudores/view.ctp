@@ -4,6 +4,7 @@
         </div>
        <div class="page-header">
            <?= $this->Html->link(__('Agregar telefono'), ['controller' => 'DeudoresTelefonos', 'action' => 'add', $deudore->Id],['class' => 'btn btn-xl btn-success']) ?>
+           <?= $this->Html->link(__('Editar deudor'), ['action' => 'edit', $deudore->Id],['class' => 'btn btn-xl btn-warning']) ?>
         </div>
         <div class="table-responsive">
         <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
@@ -98,7 +99,7 @@
                 <td><?= h($deuda->fecha_mora) ?></td>
                 <td><?= h($deuda->dias_mora) ?></td>
                  <td class="actions">
-                  <?= $this->Html->link(__('Nueva'), ['controller' => 'DeudasGestiones', 'action' => 'add', $deuda->Id],['class' => 'btn btn-sm btn-primary']) ?>
+                  <?= $this->Html->link(__('Nueva gestion'), ['controller' => 'DeudasGestiones', 'action' => 'add', $deuda->Id],['class' => 'btn btn-sm btn-primary']) ?>
                     <?= $this->Html->link(__('Ver'), ['controller' => 'Deudas','action' => 'view', $deuda->Id],['class' => 'btn btn-sm btn-success']) ?>
                     <?= $this->Html->link(__('Editar'), ['controller' => 'Deudas','action' => 'edit', $deuda->Id],['class' => 'btn btn-sm btn-warning']) ?>
                 </td>
