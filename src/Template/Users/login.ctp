@@ -7,7 +7,7 @@
 
   			<fieldset>
   				<h2>Inicio de Sesión</h2>
-  				<hr class="colorgraph">
+  				<!-- <hr class="colorgraph"> -->
   				<div class="form-group">
                         <?= $this->Form->input('email',['class' => 'form-control input-lg', 'placeholder' => 'Dirección de mail',
                          'label' => false , 'require'])?>
@@ -19,14 +19,14 @@
                          'label' => false , 'require'])?>
 
   				</div>
-  				<hr class="colorgraph">
+  				<!-- <hr class="colorgraph"> -->
   				<div class="row">
-  				<div class="col-xs-6 col-sm-6 col-md-6">
+  				<div >
               <?= $this->Form->button(__('Acceder'),['class' => 'fbtn btn-lg btn-success btn-block'])?>
   				</div>
-          <div class="col-xs-6 col-sm-6 col-md-6">
+          <!-- <div class="col-xs-6 col-sm-6 col-md-6">
               <?= $this->Form->button('Pedir registro', ['class' => 'fbtn btn-lg btn-primary btn-block'])?>
-  				</div>
+  				</div> -->
   				</div>
   			</fieldset>
   		<?= $this->Form->end()?>

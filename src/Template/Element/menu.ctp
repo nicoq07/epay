@@ -14,6 +14,7 @@
             <?php if(isset($current_user)): ?>
 
                 <ul class="nav navbar-nav">
+                     <?php if($current_user['role_id'] == 1): ?>
                      <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Clientes <span class="caret"></span></a>
                           <ul class="dropdown-menu" role="menu">
@@ -25,6 +26,8 @@
                             </li>
                           </ul>
                       </li>
+                    <?php endif; ?>
+                     <?php if($current_user['role_id'] == 1): ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Carteras <span class="caret"></span></a>
                           <ul class="dropdown-menu" role="menu">
@@ -34,22 +37,24 @@
                               <li>
                                 <?=  $this->Html->link('Agregar nueva', ['controller' => 'Carteras', 'action' => 'add']) ?>
                             </li>
-                            <li>
-                              <?=  $this->Html->link('Importar excel', ['controller' => 'Carteras', 'action' => 'subir']) ?>
-                          </li>
+                            
                           </ul>
                       </li>
+                    <?php endif; ?>
                       <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Deudas <span class="caret"></span></a>
                           <ul class="dropdown-menu" role="menu">
                             <li>
                                 <?=  $this->Html->link('Listar deudas', ['controller' => 'Deudas', 'action' => 'index']) ?>
                             </li>
+                              <?php if($current_user['role_id'] == 1): ?>
                               <li>
                                 <?=  $this->Html->link('Asignar usuario', ['controller' => 'Deudas', 'action' => 'asignar']) ?>
                             </li>
+                              <?php endif; ?>
                           </ul>
                       </li>
+                    <?php if($current_user['role_id'] == 1): ?>
                       <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Deudores <span class="caret"></span></a>
                           <ul class="dropdown-menu" role="menu">
@@ -60,7 +65,7 @@
                             </li>
                           </ul>
                       </li>
-
+                    <?php endif; ?>
 
                   </ul>
 

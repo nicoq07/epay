@@ -6,7 +6,9 @@
     <title>
         <?= $this->fetch('title') ?>
     </title>
-    <?= $this->Html->meta('icon') ?>
+    <?= $this->Html->meta('favicon.ico', '/favicon.ico', array (
+    'type' => 'icon' 
+) ); ?>
 
     <?= $this->Html->css('bootstrap.min') ?>
     <?= $this->Html->script(['jquery-3.1.1.min','bootstrap.min','funciones.js']) ?>

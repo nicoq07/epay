@@ -4,7 +4,7 @@
     <fieldset>
         <legend><?= __('Editar telefono') ?></legend>
         <?php
-            echo $this->Form->input('descripcion');
+            echo $this->Form->input('descripcion', ['label' => 'Descripción (se recomienda palabras cortas. Ej: "viable", "no viable")']);
             echo $this->Form->input('telefono');
         ?>
     </fieldset>
