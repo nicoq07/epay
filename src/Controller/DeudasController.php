@@ -118,6 +118,12 @@ class DeudasController extends AppController
           'contain' => []
       ]);
       if ($this->request->is(['patch', 'post', 'put'])) {
+
+        if ($this->request->data['id_estado'] = 7)
+        {
+            $this->request->data['contactado'] = true;
+        }
+
           $deuda = $this->Deudas->patchEntity($deuda, $this->request->data);
           if ($this->Deudas->save($deuda)) {
               $this->Flash->success(__('Guardado con éxito'));

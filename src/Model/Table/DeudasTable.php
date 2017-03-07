@@ -103,6 +103,9 @@ class DeudasTable extends Table
         $validator
             ->allowEmpty('dias_mora');
 
+        $validator
+            ->boolean('contactado');
+
         return $validator;
     }
 

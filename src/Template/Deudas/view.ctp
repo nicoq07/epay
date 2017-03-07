@@ -26,6 +26,10 @@
 
         </tr>
         <tr>
+                <th scope="row"><?= __('Fue contactado') ?></th>
+                <td><?= $deuda->contactado ? __('Si') : __('No'); ?></td>
+            </tr>
+        <tr>
             <th scope="row"><?= __('Operador asignado') ?></th>
             <td>
                 <?= $deuda->has('user') ? $this->Html->link($deuda->user->presentacion, ['controller' => 'Users', 'action' => 'view', $deuda->user->id]) : '' ?>

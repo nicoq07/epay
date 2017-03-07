@@ -4,8 +4,15 @@
         <legend><?= __('Nueva gestión') ?></legend>
         <?php
             echo $this->Form->input('descripcion');
+            if (!empty($deuda))
+                {
+                     echo $this->Form->select('estado_id', $estados_deuda->toArray(),['default' => $deuda->estado_id]);
+                }  
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Guardar')) ?>
+
+    <div style="margin-top: 20px">
+        <?= $this->Form->button(__('Guardar')) ?>
+    </div>
     <?= $this->Form->end() ?>
 </div>

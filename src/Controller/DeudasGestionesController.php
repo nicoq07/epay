@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * DeudasGestiones Controller
@@ -71,14 +72,20 @@ class DeudasGestionesController extends AppController
      */
     public function add($deuda_id = null)
     {
+      if (empty($deuda_id))
+        {
+          return false;
+        }
+        $boolean = false;
         $deudasGestione = $this->DeudasGestiones->newEntity();
-        if (empty($deuda_id))
-          {
-            return false;
-          }
-          $deudasGestione->deuda_id = $deuda_id;
+        $deuda = $this->DeudasGestiones->Deudas->get($deuda_id);
+        $deudasGestione->deuda_id = $deuda_id;
+
         if ($this->request->is('post')) {
             $deudasGestione = $this->DeudasGestiones->patchEntity($deudasGestione, $this->request->data);
+            $connection = ConnectionManager::get('default');
+            if ($this->request->data['estado_id'] == 7) $boolean = true;
+            $connection->update('deudas', ['estado_id' => $this->request->data['estado_id'] , 'contactado' => $boolean  ], ['id' => $deudasGestione->deuda_id]);
 
 
             if ($this->DeudasGestiones->save($deudasGestione)) {
@@ -88,8 +95,11 @@ class DeudasGestionesController extends AppController
             }
             $this->Flash->error(__('Error al guardar la gestión. Reintente.'));
         }
+        $estados_deuda = $this->DeudasGestiones->Deudas->EstadosDeudas->find('list', ['limit' => 200]);
         $deudas = $this->DeudasGestiones->Deudas->find('list', ['limit' => 200]);
-        $this->set(compact('deudasGestione', 'deudas'));
+
+        // $estado_actual_id = $estado_actual_id->estado_id;
+        $this->set(compact('deudasGestione', 'deudas','estados_deuda','deuda'));
         $this->set('_serialize', ['deudasGestione']);
     }
 
