@@ -1,5 +1,11 @@
 <div class="well">
-    <h3><?= h('Deuda de: ') ; echo $this->Html->link($deuda->deudore->presentacionCompleta , ['controller' => 'Deudores', 'action' => 'view', $deuda->deudore->Id]) ?></h3>
+    <div class="row">
+        <div class="col-lg-10"> <h3><?= h('Deuda de: ') ; echo $this->Html->link($deuda->deudore->presentacionCompleta , ['controller' => 'Deudores', 'action' => 'view', $deuda->deudore->Id]) ?></h3>
+        </div>
+         <div class="col-lg-2">
+               <?= $this->Html->link(__('Editar'), ['controller' => 'Deudas' ,'action' => 'edit', $deuda->Id],['class' => 'btn btn-xl btn-warning']) ?>
+          </div>
+    </div>
     <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
         <tr>
             <th scope="row"><?= __('Deudor') ?></th>
@@ -60,24 +66,21 @@
             <td><?= h($deuda->dias_mora) ?></td>
         </tr>
         <tr>
-         <div>
-               <?= $this->Html->link(__('Editar'), ['controller' => 'Deudas' ,'action' => 'edit', $deuda->Id],['class' => 'btn btn-sm btn-warning']) ?>
-          </div>
+        
         </tr>
     </table>
 
 </div>
 <div class="well">
-  <div class="container">
-      <div class="row justify-content-start">
-           <div class="col-4">
+      <div class="row">
+           <div class="col-lg-10">
                <h3> Gestiones </h3>
            </div>
-           <div class="col-4">
-               <?= $this->Html->link(__('Nueva'), ['controller' => 'DeudasGestiones' ,'action' => 'add', $deuda->Id],['class' => 'btn btn-sm btn-success']) ?>
+           <div class="col-lg-2">
+               <?= $this->Html->link(__('Nueva'), ['controller' => 'DeudasGestiones' ,'action' => 'add', $deuda->Id],['class' => 'btn btn-xl btn-success']) ?>
           </div>
       </div>
-    </div>
+
     <?php if (!empty($deuda->deudas_gestiones)): ?>
       <div class="table-responsive">
           <table class="table table-striped table-hover"  cellpadding="0" cellspacing="0">

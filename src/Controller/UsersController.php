@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * Users Controller
@@ -46,7 +47,22 @@ class UsersController extends AppController
             $user = $this->Auth->identify();
             if($user)
             {
+				
                 $this->Auth->setUser($user);
+				
+				 $login = null;
+				 $connection = ConnectionManager::get('default');
+				 $login = $this->Users->UserLogin->get($user['id']);
+				 if (!empty($login))
+				 {
+					 
+				 }
+				 /* $var = $connection->insert('user_login', 
+				 [
+						'user_id' => $user['id']
+				 ]);
+				  */
+				
                 return $this->redirect($this->Auth->redirectUrl());
             }
             else

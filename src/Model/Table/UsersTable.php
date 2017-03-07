@@ -43,6 +43,11 @@ class UsersTable extends Table
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id'
         ]);
+		
+		$this->hasOne('UserLogin', [
+            'foreignKey' => 'user_login'
+        ]);
+		
     }
 
     /**

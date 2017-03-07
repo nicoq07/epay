@@ -2,14 +2,17 @@
     <div class="page-header">
     <h3>Asignación de deudas </h3>
     </div>
-
-    <div style="text-align:center" >
-      <?= $this->Form->create($deudas) ?>
-        <div style="display:inline" >
-            <h4>Asignar a:  </h4>
-            <?= $this->Form->input('usuario_id',['label' => '' , 'type'=> 'select', 'options' => $users, 'empty'=> true, ]); ?>
-            <?= $this->Form->button('Asignar', [ 'controller' => 'Deudas', 'action' => 'asignar' , 'type' => 'submit']);?>
-        </div>
+    <div class ="col-lg-12">
+                <h4>Asignar a:</h4>
+            </div> 
+     <?= $this->Form->create($deudas) ?>   
+    <div class="row"> 
+            <div class ="col-lg-8">
+                <?= $this->Form->input('usuario_id',['label' => '' , 'type'=> 'select', 'options' => $users, 'empty'=> true, ]); ?>
+            </div>
+            <div class ="col-lg-4 busqueda">
+                <?= $this->Form->button('Asignar', [ 'controller' => 'Deudas', 'action' => 'asignar' , 'type' => 'submit']);?>
+            </div>
     </div>
 
     <div class="table-responsive">
@@ -20,7 +23,6 @@
                 <th scope="col"><?= $this->Paginator->sort('cartera_id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('usuario_id', ['label'=>'Asignado a:']) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('producto') ?></th>
-
                 <th scope="col"><?= $this->Paginator->sort('numero_producto') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('capital_inicial') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('total') ?></th>

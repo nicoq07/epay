@@ -7,10 +7,10 @@
         <?= $this->fetch('title') ?>
     </title>
     <?= $this->Html->meta('favicon.ico', '/favicon.ico', array (
-    'type' => 'icon' 
+    'type' => 'icon'
 ) ); ?>
 
-    <?= $this->Html->css('bootstrap.min') ?>
+    <?= $this->Html->css(['bootstrap.min','hoja.css']) ?>
     <?= $this->Html->script(['jquery-3.1.1.min','bootstrap.min','funciones.js']) ?>
 
     <?= $this->fetch('meta') ?>
