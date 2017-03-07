@@ -35,7 +35,11 @@ class UsersController extends AppController
     }
 
     public function login()
-    {
+    {	
+		if ($this->Auth->user())
+        {
+            return $this->redirect(['controller' => 'Users', 'action' => 'home']);
+        }
 
         if($this->request->is('post'))
         {
@@ -50,10 +54,7 @@ class UsersController extends AppController
                 $this->Flash->error('Datos son invalidos, por favor intente nuevamente', ['key' => 'auth']);
             }
         }
-        if ($this->Auth->user())
-        {
-            return $this->redirect(['controller' => 'Users', 'action' => 'home']);
-        }
+        
     }
     public function logout()
     {

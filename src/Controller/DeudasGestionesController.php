@@ -76,17 +76,25 @@ class DeudasGestionesController extends AppController
         {
           return false;
         }
-        $boolean = false;
+       
         $deudasGestione = $this->DeudasGestiones->newEntity();
         $deuda = $this->DeudasGestiones->Deudas->get($deuda_id);
         $deudasGestione->deuda_id = $deuda_id;
 
         if ($this->request->is('post')) {
+			
             $deudasGestione = $this->DeudasGestiones->patchEntity($deudasGestione, $this->request->data);
+			
             $connection = ConnectionManager::get('default');
-            if ($this->request->data['estado_id'] == 7) $boolean = true;
-            $connection->update('deudas', ['estado_id' => $this->request->data['estado_id'] , 'contactado' => $boolean  ], ['id' => $deudasGestione->deuda_id]);
-
+			
+            if ($this->request->data['estado_id'] == 7)
+			{
+				$connection->update('deudas', ['estado_id' => $this->request->data['estado_id'] , 'contactado' => true ], ['id' => $deudasGestione->deuda_id]);
+			}
+			else
+			{
+				$connection->update('deudas', ['estado_id' => $this->request->data['estado_id'] ], ['id' => $deudasGestione->deuda_id]);
+			}
 
             if ($this->DeudasGestiones->save($deudasGestione)) {
                 $this->Flash->success(__('Gestión guardada.'));
