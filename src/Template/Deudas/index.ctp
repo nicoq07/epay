@@ -1,4 +1,4 @@
-<div class="row">
+<div class="container-fluid">
     <div class="page-header">
     <h3>Deudas</h3>
     </div>
@@ -20,7 +20,7 @@
                 <th scope="col"><?= $this->Paginator->sort('fecha_mora') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('dias_mora') ?></th>
                 <th scope="col"><?= h('Gestiones') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
+                <th scope="col" class="actions"><?= __('Acciones en deuda') ?></th>
             </tr>
         </thead>
         <tbody>

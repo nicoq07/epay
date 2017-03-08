@@ -1,3 +1,4 @@
+<div class="container-fluid">
 <div class="well">
     <div class="row">
         <div class="col-lg-10"> <h3><?= h('Deuda de: ') ; echo $this->Html->link($deuda->deudore->presentacionCompleta , ['controller' => 'Deudores', 'action' => 'view', $deuda->deudore->Id]) ?></h3>
@@ -111,4 +112,5 @@
         </table>
         <?php endif; ?>
     </div>
+</div>
 </div>

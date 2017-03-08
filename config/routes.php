@@ -34,7 +34,7 @@ Router::scope('/deudas',
 
 Router::scope('/', function (RouteBuilder $routes) {
 
-    	 $routes->connect('/', ['controller' => 'Deudas', 'action' => 'index']);
+    	 $routes->connect('/', ['controller' => 'Users', 'action' => 'login']);
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
      */

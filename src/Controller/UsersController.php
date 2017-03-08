@@ -36,45 +36,50 @@ class UsersController extends AppController
     }
 
     public function login()
-    {	
-		if ($this->Auth->user())
+    {
+      ///me fijo en la tabla que el usuario no exista, osea, no haya iniciado sesión previamente
+		    if ($this->Auth->user())
         {
             return $this->redirect(['controller' => 'Users', 'action' => 'home']);
         }
 
-        if($this->request->is('post'))
+        if ($this->request->is('post'))
         {
             $user = $this->Auth->identify();
             if($user)
             {
-				
-                $this->Auth->setUser($user);
-				
-				 $login = null;
-				 $connection = ConnectionManager::get('default');
-				 $login = $this->Users->UserLogin->get($user['id']);
-				 if (!empty($login))
-				 {
-					 
-				 }
-				 /* $var = $connection->insert('user_login', 
-				 [
-						'user_id' => $user['id']
-				 ]);
-				  */
-				
-                return $this->redirect($this->Auth->redirectUrl());
+
+      			  $login = null;
+      			  $connection = ConnectionManager::get('default');
+              $login = $connection->execute("SELECT user_id FROM user_login WHERE user_id = ?", [$user['id']]);
+              if ($login->count() == 0)
+                {
+                  $connection->insert('user_login', ['user_id' => $user['id']]);
+                  $this->Auth->setUser($user);
+                  return $this->redirect($this->Auth->redirectUrl());
+                }
+                else {
+                  $this->Flash->error('Su usuario se encuentra con una sesión iniciada', ['key' => 'auth']);
+                }
+
             }
             else
             {
                 $this->Flash->error('Datos son invalidos, por favor intente nuevamente', ['key' => 'auth']);
             }
         }
-        
+
     }
     public function logout()
     {
-        return $this->redirect($this->Auth->logout());
+        $id = $this->Auth->user()['id'];
+        $connection = ConnectionManager::get('default');
+        $login = $connection->execute("DELETE FROM user_login WHERE user_id = ?", [$id]);
+        if ($login->count() == 1)
+          {
+            return $this->redirect($this->Auth->logout());
+          }
+
     }
     public function home()
     {
