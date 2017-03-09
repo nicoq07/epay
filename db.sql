@@ -1,14 +1,20 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.1
--- https://www.phpmyadmin.net/
+-- version 4.5.2
+-- http://www.phpmyadmin.net
 --
--- Servidor: localhost:3306
--- Tiempo de generación: 07-03-2017 a las 14:56:13
--- Versión del servidor: 5.6.34
--- Versión de PHP: 7.1.0
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 09-03-2017 a las 14:36:38
+-- Versión del servidor: 5.7.9
+-- Versión de PHP: 5.6.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de datos: `pay_db`
@@ -22,14 +28,17 @@ USE `pay_db`;
 -- Estructura de tabla para la tabla `carteras`
 --
 
-CREATE TABLE `carteras` (
-  `Id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `carteras`;
+CREATE TABLE IF NOT EXISTS `carteras` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
   `empresa_id` int(11) NOT NULL,
   `active` tinyint(1) DEFAULT '1',
   `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `empresa_cartera_idx` (`empresa_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `carteras`
@@ -44,8 +53,9 @@ INSERT INTO `carteras` (`Id`, `descripcion`, `empresa_id`, `active`, `created`, 
 -- Estructura de tabla para la tabla `deudas`
 --
 
-CREATE TABLE `deudas` (
-  `Id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `deudas`;
+CREATE TABLE IF NOT EXISTS `deudas` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `deudor_id` int(11) NOT NULL,
   `cartera_id` int(11) NOT NULL,
   `producto` varchar(45) COLLATE latin1_spanish_ci DEFAULT NULL,
@@ -53,40 +63,45 @@ CREATE TABLE `deudas` (
   `capital_inicial` decimal(30,2) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
-  `numero_producto` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
+  `numero_producto` varchar(80) COLLATE latin1_spanish_ci NOT NULL,
   `usuario_id` int(11) DEFAULT NULL,
   `total` decimal(30,2) DEFAULT NULL,
   `fecha_mora` datetime DEFAULT NULL,
   `dias_mora` int(10) UNSIGNED DEFAULT NULL,
   `estado_id` int(11) NOT NULL DEFAULT '1',
-  `contactado` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+  `contactado` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Id`),
+  KEY `deudor_deuda_idx` (`deudor_id`),
+  KEY `cartera_deuda_idx` (`cartera_id`),
+  KEY `usuario_deuda` (`usuario_id`),
+  KEY `estados_deuda` (`estado_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `deudas`
 --
 
 INSERT INTO `deudas` (`Id`, `deudor_id`, `cartera_id`, `producto`, `active`, `capital_inicial`, `created`, `modified`, `numero_producto`, `usuario_id`, `total`, `fecha_mora`, `dias_mora`, `estado_id`, `contactado`) VALUES
-(375, 308, 8, 'Prestamo Personal', 1, '1672.47', '2017-03-04 02:17:30', '2017-03-07 12:46:45', '5400368758', 5, '11868.08', '2011-10-05 12:00:00', 1947, 6, 1),
-(376, 309, 8, 'Prestamo Personal', 1, '4373.17', '2017-03-04 02:17:30', '2017-03-07 12:54:25', '30255565', NULL, '19160.94', '2011-05-11 12:00:00', 2094, 7, 1),
-(377, 310, 8, 'Prestamo Personal', 1, '773.54', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '130107754', NULL, '3559.45', '2011-12-31 12:00:00', 1860, 1, 0),
-(378, 311, 8, 'Prestamo Personal', 1, '779.14', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '20448153', NULL, '3662.80', '2011-10-11 12:00:00', 1941, 1, 0),
-(379, 312, 8, 'Prestamo Personal', 1, '2420.75', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '310083944', NULL, '13625.07', '2011-01-11 12:00:00', 2214, 1, 0),
-(380, 312, 8, 'Prestamo Personal', 1, '4556.85', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '310088736', NULL, '25635.34', '2011-01-11 12:00:00', 2214, 1, 0),
-(381, 312, 8, 'Prestamo Personal', 1, '5835.62', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '310096965', NULL, '32842.52', '2011-01-11 12:00:00', 2214, 7, 1),
-(382, 312, 8, 'Prestamo Personal', 1, '1160.92', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '310097543', NULL, '6535.28', '2011-01-11 12:00:00', 2214, 1, 0),
-(383, 312, 8, 'Prestamo Personal', 1, '225.63', '2017-03-04 02:17:30', '2017-03-07 01:56:29', '310112012', NULL, '1271.02', '2011-01-11 12:00:00', 2212, 8, 0),
-(384, 313, 8, 'Prestamo Personal', 1, '346.44', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '11049128', NULL, '1661.25', '2010-10-09 12:00:00', 2308, 1, 0),
-(385, 313, 8, 'Prestamo Personal', 1, '4953.93', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '140551639', NULL, '24037.68', '2010-10-09 12:00:00', 2275, 1, 0),
-(386, 313, 8, 'Prestamo Personal', 1, '914.86', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '141013938', NULL, '4428.75', '2010-10-09 12:00:00', 2275, 1, 0),
-(387, 314, 8, 'Prestamo Personal', 1, '2759.50', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '130063241', NULL, '13084.99', '2011-03-11 12:00:00', 2155, 1, 0),
-(388, 314, 8, 'Prestamo Personal', 1, '3354.21', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '130096078', NULL, '16129.16', '2011-03-11 12:00:00', 2122, 1, 0),
-(389, 314, 8, 'Prestamo Personal', 1, '1692.67', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '130109013', NULL, '8231.58', '2011-03-11 12:00:00', 2134, 1, 0),
-(390, 315, 8, 'Prestamo Personal', 1, '528.14', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '290181413', NULL, '4100.58', '2009-10-11 12:00:00', 2671, 1, 0),
-(391, 316, 8, 'Prestamo Personal', 1, '1668.96', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '90148245', NULL, '7529.45', '2010-09-04 12:00:00', 2336, 1, 0),
-(392, 316, 8, 'Prestamo Personal', 1, '1581.33', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '90156113', NULL, '7086.43', '2010-09-04 12:00:00', 2336, 1, 0),
-(393, 316, 8, 'Prestamo Personal', 1, '1508.72', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '90158317', NULL, '6783.37', '2010-09-04 12:00:00', 2336, 1, 0),
-(394, 316, 8, 'Prestamo Personal', 1, '624.48', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '90168893', NULL, '2848.11', '2010-09-04 12:00:00', 2343, 1, 0),
+(375, 308, 8, 'Prestamo Personal', 1, '1672.47', '2017-03-04 02:17:30', '2017-03-09 14:22:43', '5400368758', 4, '11868.08', '2011-10-05 12:00:00', 1947, 1, 1),
+(376, 309, 8, 'Prestamo Personal', 1, '4373.17', '2017-03-04 02:17:30', '2017-03-07 20:59:10', '30255565', 5, '19160.94', '2011-05-11 12:00:00', 2094, 7, 1),
+(377, 310, 8, 'Prestamo Personal', 1, '773.54', '2017-03-04 02:17:30', '2017-03-07 20:59:10', '130107754', 5, '3559.45', '2011-12-31 12:00:00', 1860, 1, 0),
+(378, 311, 8, 'Prestamo Personal', 1, '779.14', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '20448153', 5, '3662.80', '2011-10-11 12:00:00', 1941, 1, 0),
+(379, 312, 8, 'Prestamo Personal', 1, '2420.75', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '310083944', 5, '13625.07', '2011-01-11 12:00:00', 2214, 1, 0),
+(380, 312, 8, 'Prestamo Personal', 1, '4556.85', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '310088736', 5, '25635.34', '2011-01-11 12:00:00', 2214, 1, 0),
+(381, 312, 8, 'Prestamo Personal', 1, '5835.62', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '310096965', 5, '32842.52', '2011-01-11 12:00:00', 2214, 7, 1),
+(382, 312, 8, 'Prestamo Personal', 1, '1160.92', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '310097543', 5, '6535.28', '2011-01-11 12:00:00', 2214, 1, 0),
+(383, 312, 8, 'Prestamo Personal', 1, '225.63', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '310112012', 5, '1271.02', '2011-01-11 12:00:00', 2212, 8, 0),
+(384, 313, 8, 'Prestamo Personal', 1, '346.44', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '11049128', 5, '1661.25', '2010-10-09 12:00:00', 2308, 1, 0),
+(385, 313, 8, 'Prestamo Personal', 1, '4953.93', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '140551639', 5, '24037.68', '2010-10-09 12:00:00', 2275, 7, 1),
+(386, 313, 8, 'Prestamo Personal', 1, '914.86', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '141013938', 5, '4428.75', '2010-10-09 12:00:00', 2275, 1, 0),
+(387, 314, 8, 'Prestamo Personal', 1, '2759.50', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '130063241', 5, '13084.99', '2011-03-11 12:00:00', 2155, 1, 0),
+(388, 314, 8, 'Prestamo Personal', 1, '3354.21', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '130096078', 5, '16129.16', '2011-03-11 12:00:00', 2122, 1, 0),
+(389, 314, 8, 'Prestamo Personal', 1, '1692.67', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '130109013', 5, '8231.58', '2011-03-11 12:00:00', 2134, 1, 0),
+(390, 315, 8, 'Prestamo Personal', 1, '528.14', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '290181413', 5, '4100.58', '2009-10-11 12:00:00', 2671, 1, 0),
+(391, 316, 8, 'Prestamo Personal', 1, '1668.96', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '90148245', 5, '7529.45', '2010-09-04 12:00:00', 2336, 1, 0),
+(392, 316, 8, 'Prestamo Personal', 1, '1581.33', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '90156113', 5, '7086.43', '2010-09-04 12:00:00', 2336, 1, 0),
+(393, 316, 8, 'Prestamo Personal', 1, '1508.72', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '90158317', 5, '6783.37', '2010-09-04 12:00:00', 2336, 1, 0),
+(394, 316, 8, 'Prestamo Personal', 1, '624.48', '2017-03-04 02:17:30', '2017-03-07 20:59:11', '90168893', 5, '2848.11', '2010-09-04 12:00:00', 2343, 1, 0),
 (395, 316, 8, 'Prestamo Personal', 1, '785.52', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '90172272', NULL, '3621.97', '2010-09-04 12:00:00', 2338, 1, 0),
 (396, 316, 8, 'Prestamo Personal', 1, '516.82', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '90172284', NULL, '2382.62', '2010-09-04 12:00:00', 2338, 1, 0),
 (397, 317, 8, 'Prestamo Personal', 1, '560.55', '2017-03-04 02:17:30', '2017-03-04 02:17:30', '330105398', NULL, '3562.41', '2010-08-12 12:00:00', 2366, 1, 0),
@@ -152,27 +167,24 @@ INSERT INTO `deudas` (`Id`, `deudor_id`, `cartera_id`, `producto`, `active`, `ca
 -- Estructura de tabla para la tabla `deudas_gestiones`
 --
 
-CREATE TABLE `deudas_gestiones` (
-  `Id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `deudas_gestiones`;
+CREATE TABLE IF NOT EXISTS `deudas_gestiones` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `deuda_id` int(11) NOT NULL,
   `descripcion` text COLLATE latin1_spanish_ci NOT NULL,
   `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `deudas_gestiones` (`deuda_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `deudas_gestiones`
 --
 
 INSERT INTO `deudas_gestiones` (`Id`, `deuda_id`, `descripcion`, `created`, `modified`) VALUES
-(1, 375, 'nueva', NULL, NULL),
-(2, 383, 'ad', NULL, NULL),
-(3, 375, 'acuerdooo', NULL, NULL),
-(4, 381, 'cambiame el estaado a contactado', NULL, NULL),
-(5, 381, 'paso el estado a no contesta', NULL, NULL),
-(6, 381, 'cambio el estado y el valor de la propieda de la deuda a Contactado', NULL, NULL),
-(7, 381, 'lo paso a acuerdo', NULL, NULL),
-(8, 381, 'lo paso a contactado', NULL, NULL);
+(21, 375, 'no debería verse en Juan', '2017-03-09 14:23:07', '2017-03-09 14:23:07'),
+(22, 376, 'este sí', '2017-03-09 14:23:46', '2017-03-09 14:23:46');
 
 -- --------------------------------------------------------
 
@@ -180,8 +192,9 @@ INSERT INTO `deudas_gestiones` (`Id`, `deuda_id`, `descripcion`, `created`, `mod
 -- Estructura de tabla para la tabla `deudores`
 --
 
-CREATE TABLE `deudores` (
-  `Id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `deudores`;
+CREATE TABLE IF NOT EXISTS `deudores` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `calificacion` varchar(45) COLLATE latin1_spanish_ci DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1',
   `created` datetime DEFAULT NULL,
@@ -193,8 +206,10 @@ CREATE TABLE `deudores` (
   `localidad` varchar(40) COLLATE latin1_spanish_ci DEFAULT NULL,
   `laboral` varchar(30) COLLATE latin1_spanish_ci DEFAULT NULL,
   `cantidad` varchar(30) COLLATE latin1_spanish_ci DEFAULT NULL,
-  `categoria` varchar(30) COLLATE latin1_spanish_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+  `categoria` varchar(30) COLLATE latin1_spanish_ci DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `dni` (`dni`)
+) ENGINE=InnoDB AUTO_INCREMENT=347 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `deudores`
@@ -247,12 +262,15 @@ INSERT INTO `deudores` (`Id`, `calificacion`, `active`, `created`, `modified`, `
 -- Estructura de tabla para la tabla `deudores_telefonos`
 --
 
-CREATE TABLE `deudores_telefonos` (
-  `Id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `deudores_telefonos`;
+CREATE TABLE IF NOT EXISTS `deudores_telefonos` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `deudor_id` int(11) NOT NULL,
   `telefono` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
-  `descripcion` varchar(30) COLLATE latin1_spanish_ci DEFAULT 'secundario'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci ROW_FORMAT=COMPACT;
+  `descripcion` varchar(30) COLLATE latin1_spanish_ci DEFAULT 'secundario',
+  PRIMARY KEY (`Id`),
+  KEY `deudor_telefono` (`deudor_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=488 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci ROW_FORMAT=COMPACT;
 
 --
 -- Volcado de datos para la tabla `deudores_telefonos`
@@ -379,14 +397,16 @@ INSERT INTO `deudores_telefonos` (`Id`, `deudor_id`, `telefono`, `descripcion`) 
 -- Estructura de tabla para la tabla `empresas`
 --
 
-CREATE TABLE `empresas` (
-  `Id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `empresas`;
+CREATE TABLE IF NOT EXISTS `empresas` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(45) COLLATE latin1_spanish_ci DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `cuit` varchar(30) COLLATE latin1_spanish_ci DEFAULT NULL,
-  `direccion` varchar(50) COLLATE latin1_spanish_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+  `direccion` varchar(50) COLLATE latin1_spanish_ci DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `empresas`
@@ -401,11 +421,13 @@ INSERT INTO `empresas` (`Id`, `descripcion`, `created`, `modified`, `cuit`, `dir
 -- Estructura de tabla para la tabla `estados_deudas`
 --
 
-CREATE TABLE `estados_deudas` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `estados_deudas`;
+CREATE TABLE IF NOT EXISTS `estados_deudas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(30) COLLATE latin1_spanish_ci NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci ROW_FORMAT=COMPACT;
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci ROW_FORMAT=COMPACT;
 
 --
 -- Volcado de datos para la tabla `estados_deudas`
@@ -428,14 +450,18 @@ INSERT INTO `estados_deudas` (`id`, `descripcion`, `active`) VALUES
 -- Estructura de tabla para la tabla `notificaciones`
 --
 
-CREATE TABLE `notificaciones` (
+DROP TABLE IF EXISTS `notificaciones`;
+CREATE TABLE IF NOT EXISTS `notificaciones` (
   `id` int(11) NOT NULL,
   `descripcion` text COLLATE latin1_spanish_ci NOT NULL,
   `emisor` int(11) NOT NULL,
   `receptor` int(11) NOT NULL,
   `leida` tinyint(1) NOT NULL DEFAULT '0',
   `broadcast` tinyint(1) NOT NULL DEFAULT '0',
-  `created` datetime DEFAULT NULL
+  `created` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_emisor` (`emisor`),
+  KEY `user_receptor` (`receptor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 -- --------------------------------------------------------
@@ -444,11 +470,13 @@ CREATE TABLE `notificaciones` (
 -- Estructura de tabla para la tabla `roles`
 --
 
-CREATE TABLE `roles` (
-  `Id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE IF NOT EXISTS `roles` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(20) COLLATE latin1_spanish_ci NOT NULL,
-  `comentario` varchar(50) COLLATE latin1_spanish_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci ROW_FORMAT=COMPACT;
+  `comentario` varchar(50) COLLATE latin1_spanish_ci DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci ROW_FORMAT=COMPACT;
 
 --
 -- Volcado de datos para la tabla `roles`
@@ -461,11 +489,34 @@ INSERT INTO `roles` (`Id`, `descripcion`, `comentario`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+CREATE TABLE IF NOT EXISTS `sessions` (
+  `id` varchar(255) COLLATE latin1_spanish_ci NOT NULL DEFAULT '',
+  `data` blob,
+  `expires` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `sessions`
+--
+
+INSERT INTO `sessions` (`id`, `data`, `expires`) VALUES
+('18s82etqu77dimus5ukk0k4bv7', 0x436f6e6669677c613a313a7b733a343a2274696d65223b693a313438393037303036383b7d417574687c613a313a7b733a343a2255736572223b613a353a7b733a323a226964223b693a333b733a363a226e6f6d627265223b733a373a224e69636f6c6173223b733a383a226170656c6c69646f223b733a373a22517569726f6761223b733a353a22656d61696c223b733a31353a2261646d696e4061646d696e2e636f6d223b733a373a22726f6c655f6964223b693a313b7d7d466c6173687c613a303a7b7d, 1489071508),
+('u8jpdajmto6ri4s85sbad05pu2', 0x436f6e6669677c613a313a7b733a343a2274696d65223b693a313438393037303038333b7d417574687c613a313a7b733a343a2255736572223b613a353a7b733a323a226964223b693a353b733a363a226e6f6d627265223b733a343a224a75616e223b733a383a226170656c6c69646f223b733a393a22416c7175697472616e223b733a353a22656d61696c223b733a373a226a40612e636f6d223b733a373a22726f6c655f6964223b693a323b7d7d, 1489071523);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `users`
 --
 
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) COLLATE latin1_spanish_ci NOT NULL,
   `password` varchar(255) COLLATE latin1_spanish_ci NOT NULL,
   `role_id` int(11) DEFAULT NULL,
@@ -473,8 +524,10 @@ CREATE TABLE `users` (
   `modified` datetime DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `nombre` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
-  `apellido` varchar(50) COLLATE latin1_spanish_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+  `apellido` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `usuarios_roles` (`role_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `users`
@@ -485,130 +538,19 @@ INSERT INTO `users` (`id`, `email`, `password`, `role_id`, `created`, `modified`
 (4, 'n@gmail.com', '$2y$10$qiaixY4xOsV5Q2/8.ydGNua503T5fAi2XGmKDqqbnoSWwCTY5L6g6', 2, '2017-02-12 19:43:12', '2017-02-12 19:43:12', 1, 'Pichi', 'Sin Permisos'),
 (5, 'j@a.com', '$2y$10$ImsFUgALOMRyPB0FSKqaN.hVt/fL2cQCWhXsRzZXAMhfiT0zXzhBG', 2, '2017-02-14 01:36:04', '2017-02-14 01:36:04', 1, 'Juan', 'Alquitran');
 
---
--- Índices para tablas volcadas
---
+-- --------------------------------------------------------
 
 --
--- Indices de la tabla `carteras`
---
-ALTER TABLE `carteras`
-  ADD PRIMARY KEY (`Id`),
-  ADD KEY `empresa_cartera_idx` (`empresa_id`);
-
---
--- Indices de la tabla `deudas`
---
-ALTER TABLE `deudas`
-  ADD PRIMARY KEY (`Id`),
-  ADD KEY `deudor_deuda_idx` (`deudor_id`),
-  ADD KEY `cartera_deuda_idx` (`cartera_id`),
-  ADD KEY `usuario_deuda` (`usuario_id`),
-  ADD KEY `estados_deuda` (`estado_id`);
-
---
--- Indices de la tabla `deudas_gestiones`
---
-ALTER TABLE `deudas_gestiones`
-  ADD PRIMARY KEY (`Id`),
-  ADD KEY `deudas_gestiones` (`deuda_id`);
-
---
--- Indices de la tabla `deudores`
---
-ALTER TABLE `deudores`
-  ADD PRIMARY KEY (`Id`),
-  ADD UNIQUE KEY `dni` (`dni`);
-
---
--- Indices de la tabla `deudores_telefonos`
---
-ALTER TABLE `deudores_telefonos`
-  ADD PRIMARY KEY (`Id`),
-  ADD KEY `deudor_telefono` (`deudor_id`);
-
---
--- Indices de la tabla `empresas`
---
-ALTER TABLE `empresas`
-  ADD PRIMARY KEY (`Id`);
-
---
--- Indices de la tabla `estados_deudas`
---
-ALTER TABLE `estados_deudas`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `notificaciones`
---
-ALTER TABLE `notificaciones`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_emisor` (`emisor`),
-  ADD KEY `user_receptor` (`receptor`);
-
---
--- Indices de la tabla `roles`
---
-ALTER TABLE `roles`
-  ADD PRIMARY KEY (`Id`);
-
---
--- Indices de la tabla `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `usuarios_roles` (`role_id`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
+-- Estructura de tabla para la tabla `user_login`
 --
 
---
--- AUTO_INCREMENT de la tabla `carteras`
---
-ALTER TABLE `carteras`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT de la tabla `deudas`
---
-ALTER TABLE `deudas`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=453;
---
--- AUTO_INCREMENT de la tabla `deudas_gestiones`
---
-ALTER TABLE `deudas_gestiones`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT de la tabla `deudores`
---
-ALTER TABLE `deudores`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=347;
---
--- AUTO_INCREMENT de la tabla `deudores_telefonos`
---
-ALTER TABLE `deudores_telefonos`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=488;
---
--- AUTO_INCREMENT de la tabla `empresas`
---
-ALTER TABLE `empresas`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
---
--- AUTO_INCREMENT de la tabla `estados_deudas`
---
-ALTER TABLE `estados_deudas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
---
--- AUTO_INCREMENT de la tabla `roles`
---
-ALTER TABLE `roles`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT de la tabla `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+DROP TABLE IF EXISTS `user_login`;
+CREATE TABLE IF NOT EXISTS `user_login` (
+  `user_id` int(14) NOT NULL,
+  `fecha_activo` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
 --
 -- Restricciones para tablas volcadas
 --
@@ -652,3 +594,13 @@ ALTER TABLE `notificaciones`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `usuarios_roles` FOREIGN KEY (`role_id`) REFERENCES `roles` (`Id`);
+
+--
+-- Filtros para la tabla `user_login`
+--
+ALTER TABLE `user_login`
+  ADD CONSTRAINT `user_login` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
