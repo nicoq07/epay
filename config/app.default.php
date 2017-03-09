@@ -64,7 +64,7 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => env('SECURITY_SALT', '__SALT__'),
+        'salt' => env('SECURITY_SALT', '695d119d332d6daed598c9f7d3cc5f7f7bbfc1314cd50a15602070d6c456e43f'),
     ],
 
     /**
@@ -229,9 +229,9 @@ return [
              * the following line and set the port accordingly
              */
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'my_app',
+            'username' => 'root',
+            'password' => '',
+            'database' => 'pay_db',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'flags' => [],
@@ -341,6 +341,6 @@ return [
      * To use database sessions, load the SQL file located at config/Schema/sessions.sql
      */
     'Session' => [
-        'defaults' => 'php',
+        'defaults' => 'database',
     ],
 ];
