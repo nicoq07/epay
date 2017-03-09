@@ -19,11 +19,11 @@
         </tr>
         <tr>
             <th scope="row"><?= __('Creada') ?></th>
-            <td><?= h($empresa->created) ?></td>
+            <td><?= h($empresa->created->format('d-m-Y')) ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Modificada') ?></th>
-            <td><?= h($empresa->modified) ?></td>
+            <td><?= h($empresa->modified->format('d-m-Y')) ?></td>
         </tr>
     </table>
 </div>
@@ -44,8 +44,8 @@
                 <td><?= h($carteras->Id) ?></td>
                 <td><?= h($carteras->descripcion) ?></td>
                 <td><?= $carteras->active ? __('Si') : __('No'); ?></td>
-                <td><?= h($carteras->created) ?></td>
-                <td><?= h($carteras->modified) ?></td>
+                <td><?= h($carteras->created->format('d-m-Y')) ?></td>
+                <td><?= h($carteras->modified->format('d-m-Y')) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('+ INFO'), ['controller' => 'Carteras', 'action' => 'view', $carteras->Id],['class' => 'btn btn-sm btn-info']) ?>
                     <?= $this->Html->link(__('Editar'), ['controller' => 'Carteras', 'action' => 'edit', $carteras->Id],['class' => 'btn btn-sm btn-warning']) ?>

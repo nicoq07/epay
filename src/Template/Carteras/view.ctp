@@ -19,11 +19,11 @@
             </tr>
             <tr>
                 <th scope="row"><?= __('Creada') ?></th>
-                <td><?= h($cartera->created) ?></td>
+                <td><?= h($cartera->created->format('d-m-Y')) ?></td>
             </tr>
             <tr>
                 <th scope="row"><?= __('Modificada') ?></th>
-                <td><?= h($cartera->modified) ?></td>
+                <td><?= h($cartera->modified->format('d-m-Y')) ?></td>
             </tr>
         </table>
     </div>
@@ -46,17 +46,23 @@
                     <th scope="col"><?= __('Modificada') ?></th>
                     <th scope="col"><?= __('Fecha Mora') ?></th>
                     <th scope="col"><?= __('Dias Mora') ?></th>
-                    <th scope="col" class="actions"><?= __('Actions') ?></th>
+                    <th scope="col" class="actions"><?= __('Acciones') ?></th>
                 </tr>
                 <?php foreach ($cartera->deudas as $deudas): ?>
                 <tr>
                   
                     <td><?= h($deudas->producto) ?></td>     
                     <td><?= h($deudas->numero_producto) ?></td>
-                    <td><?= h($deudas->capital_inicial) ?></td>
-                    <td><?= h($deudas->total) ?></td>
-                    <td><?= h($deudas->modified) ?></td>
-                    <td><?= h($deudas->fecha_mora) ?></td>
+                    <td><?= $this->Number->format($deudas->capital_inicial,[
+                                  'before' => '$',
+                                  'locale' => 'es_Ar'
+                                  ]) ?></td>
+                    <td><?= $this->Number->format($deudas->total,[
+                                  'before' => '$',
+                                  'locale' => 'es_Ar'
+                                  ]) ?></td>
+                    <td><?= h($deudas->modified->format('d-m-Y')) ?></td>
+                    <td><?= h($deudas->fecha_mora->format('d-m-Y')) ?></td>
                     <td><?= h($deudas->dias_mora) ?></td>
                     <td class="actions"> 
                         <?= $this->Html->link(__('Ver'), ['controller' => 'Deudas', 'action' => 'view', $deudas->Id],['class' => 'btn btn-sm btn-info']) ?>

@@ -9,7 +9,7 @@
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('Id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('descripcion' , ['label' => 'Nombre']) ?></th>
-                <th scope="col"><?= $this->Paginator->sort('created' , ['label' => 'Creado']) ?></th>
+<!--                <th scope="col"><?= $this->Paginator->sort('created' , ['label' => 'Creado']) ?></th>-->
                 <th scope="col"><?= $this->Paginator->sort('modified', ['label' => 'Modificado']) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('cuit', ['label' => 'CUIT']) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('direccion', ['label' => 'Dirección']) ?></th>
@@ -21,8 +21,8 @@
             <tr>
                 <td><?= $this->Number->format($empresa->Id) ?></td>
                 <td><?= h($empresa->descripcion) ?></td>
-                <td><?= h($empresa->created) ?></td>
-                <td><?= h($empresa->modified) ?></td>
+<!--                <td><?= h($empresa->created) ?></td>-->
+                <td><?= h($empresa->modified->format('d-m-Y')) ?></td>
                 <td><?= h($empresa->cuit) ?></td>
                 <td><?= h($empresa->direccion) ?></td>
                 <td class="actions">
