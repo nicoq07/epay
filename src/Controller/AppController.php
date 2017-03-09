@@ -15,6 +15,8 @@
 namespace App\Controller;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+
+
 //use PHPOffice\PHPExcel\PHPExcel_IOFactory;
 
 /**
@@ -39,6 +41,7 @@ class AppController extends Controller
     public function initialize()
     {
         parent::initialize();
+
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
         $this->loadComponent('Auth', [

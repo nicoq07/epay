@@ -37,7 +37,7 @@
                               <li>
                                 <?=  $this->Html->link('Agregar nueva', ['controller' => 'Carteras', 'action' => 'add']) ?>
                             </li>
-                            
+
                           </ul>
                       </li>
                     <?php endif; ?>
@@ -60,6 +60,16 @@
                           <ul class="dropdown-menu" role="menu">
                             <li>
                               <?=  $this->Html->link('Ver todos', ['controller' => 'Deudores', 'action' => 'index']) ?>
+                            </li>
+                              <li>
+                            </li>
+                          </ul>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Gestiones <span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+                            <li>
+                              <?=  $this->Html->link('Ver últimas', ['controller' => 'DeudasGestiones', 'action' => 'index']) ?>
                             </li>
                               <li>
                             </li>

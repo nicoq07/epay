@@ -44,30 +44,38 @@
         </tr>
         <tr>
             <th scope="row"><?= __('Capital Inicial') ?></th>
-            <td><?= $this->Number->format($deuda->capital_inicial) ?></td>
+            <td><?= $this->Number->format($deuda->capital_inicial,[
+                                  'before' => '$',
+                                  'locale' => 'es_Ar'
+                                  ]) ?>
+            </td>
         </tr>
         <tr>
+          
             <th scope="row"><?= __('Total') ?></th>
-            <td><?= $this->Number->format($deuda->total) ?></td>
+            <td><?= $this->Number->format($deuda->total,[
+                                  'before' => '$',
+                                  'locale' => 'es_Ar'
+                                  ]) ?>
         </tr>
         <tr>
             <th scope="row"><?= __('Creado') ?></th>
-            <td><?= h($deuda->created->nice()) ?></td>
+            <td><?= h($deuda->created->format('d-m-Y')) ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Modificado') ?></th>
-            <td><?= h($deuda->modified->nice()) ?></td>
+            <td><?= h($deuda->modified->format('d-m-Y')) ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Fecha Mora') ?></th>
-            <td><?= h($deuda->fecha_mora) ?></td>
+            <td><?= h($deuda->fecha_mora->format('d-m-Y')) ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Dias Mora') ?></th>
             <td><?= h($deuda->dias_mora) ?></td>
         </tr>
         <tr>
-        
+
         </tr>
     </table>
 
@@ -88,7 +96,7 @@
             <tr>
 <!--                <th scope="col"><?= __('Id') ?></th>-->
                 <th scope="col"><?= __('Descripcion') ?></th>
-<!--                <th scope="col"><?= __('Modificada') ?></th>-->
+                <th scope="col"><?= __('Modificada') ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
 
@@ -96,11 +104,11 @@
             <tr>
 <!--                <td><?= h($deudasGestiones->Id) ?></td>-->
                 <td><?= h($deudasGestiones->descripcion) ?></td>
-<!--
+
                 <?php if(!empty($deudasGestiones->modified)): ?>
-                <td><?= h($deudasGestiones->modified->nice());?></td>
+                <td><?= h($deudasGestiones->modified->format('d-m-Y'));?></td>
               <?php else : ?>
--->
+
 <!--                  <td>Sin datos</td>-->
                 <?php endif;?>
                 <td class="actions">

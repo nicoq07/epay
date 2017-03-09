@@ -6,7 +6,8 @@
     <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
-                    <th scope="col"><?= $this->Paginator->sort('descripcion') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('descripcion', ['label' => 'Descripción']) ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('modified', ['label' => 'Ult. vez actualizada']) ?></th>
                     <th scope="col" class="actions"><?= __('Actions') ?></th>
                 </tr>
             </thead>
@@ -14,9 +15,10 @@
                 <?php foreach ($deudasGestiones as $deudasGestione): ?>
                 <tr>
                     <td><?= h($deudasGestione->descripcion) ?></td>
+                    <td><?= h($deudasGestione->modified) ?></td>
                     <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $deudasGestione->Id],['class' => 'btn btn-sm btn-info']) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $deudasGestione->Id],['class' => 'btn btn-sm btn-warning']) ?>
+                        <?= $this->Html->link(__('Ver'), ['action' => 'view', $deudasGestione->Id],['class' => 'btn btn-sm btn-info']) ?>
+                        <!-- <?= $this->Html->link(__('Edit'), ['action' => 'edit', $deudasGestione->Id],['class' => 'btn btn-sm btn-warning']) ?> -->
                     </td>
                 </tr>
                 <?php endforeach; ?>

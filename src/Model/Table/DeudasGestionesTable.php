@@ -36,6 +36,8 @@ class DeudasGestionesTable extends Table
         $this->displayField('Id');
         $this->primaryKey('Id');
 
+        $this->addBehavior('Timestamp');
+
         $this->belongsTo('Deudas', [
             'foreignKey' => 'deuda_id',
             'joinType' => 'INNER'

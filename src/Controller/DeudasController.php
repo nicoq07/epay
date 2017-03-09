@@ -1,6 +1,6 @@
 <?php
 namespace App\Controller;
-
+use Cake\I18n\Number;
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 
@@ -25,6 +25,7 @@ class DeudasController extends AppController
   public function initialize()
       {
           parent::initialize();
+          Number::defaultCurrency('USD');
           $this->loadComponent('Paginator');
       }
 
