@@ -83,6 +83,9 @@ class UsersController extends AppController
     }
     public function home()
     {
+      $session = $this->request->session();
+      $session->destroy();
+    
         $this->render();
     }
     /**
