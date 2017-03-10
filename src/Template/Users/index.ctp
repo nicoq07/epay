@@ -19,7 +19,7 @@
     		<?php foreach ($users as $user): ?>
     		<tr>
                 <td><?= $this->Number->format($user->id) ?></td>
-                <td><?= h($user->apellido . ', '. $user->nombre) ?></td>
+                <td><?= h($user->presentacion) ?></td>
                 <td><?= h($user->email) ?></td>
                 <td><?= h($user->role->descripcion) ?></td>
                 <td><?= $user->active ? __('Si') : __('No');?></td>

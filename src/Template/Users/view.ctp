@@ -3,7 +3,7 @@
     <dl>
       <dt>Nombre y Apellido</dt>
       <dd>
-          <?= $user->apellido .', '.$user->nombre ?>
+          <?= $user->presentacion ?>
           &nbsp;
       </dd>
       <br>
