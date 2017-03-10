@@ -342,5 +342,6 @@ return [
      */
     'Session' => [
         'defaults' => 'database',
+        'timeout'   =>  4500,
     ],
 ];
