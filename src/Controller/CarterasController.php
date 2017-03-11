@@ -256,6 +256,24 @@ class CarterasController extends AppController
                     'created' => new \DateTime('now')],
                     ['created' => 'datetime' , 'modified' => 'datetime']);
 
+                  ///insertar gestion informando a quien fue enviada la deuda
+                  //ver como traer el id de la deuda, si buscandola por todos los campos o como
+                  // $connection->insert('deudas_gestiones', [
+                  //     'deuda_id' => $id,
+                  //     'cartera_id' => $idCartera,
+                  //     'usuario_id' => $user_id,
+                  //     'producto' => $worksheet->getCell('I'.$row)->getValue(),
+                  //     'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                  //     'fecha_mora' => $fecha_mora,
+                  //     'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
+                  //     'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
+                  //     'total' => $worksheet->getCell('N'.$row)->getValue(),
+                  //     'active' => true,
+                  //     'modified' => new \DateTime('now'),
+                  //     'created' => new \DateTime('now')],
+                  //     ['created' => 'datetime' , 'modified' => 'datetime']);
+
+
 
 
               }
