@@ -83,8 +83,8 @@ class UsersController extends AppController
     }
     public function home()
     {
-      $session = $this->request->session();
-      debug($session);
+      // $session = $this->request->session();
+      // debug($session->read('expires'));
 
         $this->render();
     }
