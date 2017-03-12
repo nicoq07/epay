@@ -192,7 +192,7 @@ class CarterasController extends AppController
                   //Busco el operador asignado, ellos me pasan el nombre completo y yo tengo
                   //que traerme el id
 
-                  $user_id = $connection->execute('SELECT id FROM users WHERE CONCAT(nombre, , apellido) LIKE :nomyape', ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
+                  $user_id = $connection->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
                   $user_id = $user_id->fetchAll()[0][0];
 
                   //cargo la deuda
@@ -238,7 +238,7 @@ class CarterasController extends AppController
                 //Busco el operador asignado, ellos me pasan el nombre completo y yo tengo
                 //que traerme el id
 
-                $user_id = $connection->execute('SELECT id FROM users WHERE CONCAT(nombre, , apellido) like :nomyape', ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
+                $user_id = $connection->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
                 $user_id = $user_id->fetchAll()[0][0];
                 /////////////////////////////////////////////////////////////////////////////////////
                 $connection->insert('deudas', [
