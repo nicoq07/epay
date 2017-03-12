@@ -23,7 +23,7 @@
                 <td><?= h($deuda->numero_producto) ?></td>
                 <td><?= $this->Number->format($deuda->capital_inicial) ?></td>
                 <td><?= $this->Number->format($deuda->total) ?></td>
-                <td><?= h($deuda->fecha_mora) ?></td>
+                <td><?= h($deuda->fecha_mora->format('d-m-Y')) ?></td>
                 <td><?= h($deuda->dias_mora) ?></td>
                 <td>
                   <?= $this->Html->link(__('Nueva'), ['controller' => 'DeudasGestiones', 'action' => 'add', $deuda->Id],['class' => 'btn btn-sm btn-primary']) ?>

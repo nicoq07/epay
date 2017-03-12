@@ -29,7 +29,7 @@
         </tr>
         <tr>
             <th scope="row"><?= __('Created') ?></th>
-            <td><?= h($notificacione->created) ?></td>
+            <td><?= h($notificacione->created->format('d-m-Y')) ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Leida') ?></th>

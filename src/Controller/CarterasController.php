@@ -133,6 +133,7 @@ class CarterasController extends AppController
           $uploadPath = 'uploads/files/';
           $uploadFile = $uploadPath.$fileName;
           if(move_uploaded_file($this->request->data['file']['tmp_name'],$uploadFile)){
+
             $excelReader = \PHPExcel_IOFactory::createReaderForFile($uploadFile);
             $excelObj = $excelReader->load($uploadFile);
             $worksheet = $excelObj->getSheet(0);
@@ -211,7 +212,7 @@ class CarterasController extends AppController
                   }
                   /////////////////////////////////////////////////////////////////////////////////////
 
-                  $connection->insert('deudas', [
+                $connection->insert('deudas', [
                       'deudor_id' => $id,
                       'cartera_id' => $idCartera,
                       'usuario_id' => $user_id,
@@ -225,6 +226,40 @@ class CarterasController extends AppController
                       'modified' => new \DateTime('now'),
                       'created' => new \DateTime('now')],
                       ['created' => 'datetime' , 'modified' => 'datetime']);
+
+                      /////me traigo el id de la deuda recien creada
+                $deuda_id = $connection->execute("SELECT Id FROM deudas WHERE deudor_id = :deudor_id AND
+                                                 cartera_id = :cartera_id AND
+                                                 usuario_id = :usuario_id AND
+                                                 producto = :producto AND
+                                                 dias_mora = :dias_mora AND
+                                                 numero_producto = :numero_producto AND
+                                                 capital_inicial = :capital_inicial AND
+                                                 total = :total" ,   ['deudor_id' => $id,
+                                                          'cartera_id' => $idCartera,
+                                                          'usuario_id' => $user_id,
+                                                          'producto' => $worksheet->getCell('I'.$row)->getValue(),
+                                                          'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                                                          'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
+                                                          'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
+                                                          'total' => $worksheet->getCell('N'.$row)->getValue()]);
+              $deuda_id = $deuda_id->fetchAll()[0][0];
+
+              //hago insert en deudas gestiones informando la asigancion de la deuda
+              //la variable $desc tendrá la descripcion de la dueda asignada
+              $desc = 'Se te ha asignado el siguiente caso :  '.
+                      'Producto : '. $worksheet->getCell('I'.$row)->getValue() . '  '.
+                      'Numero de producto : '.  $worksheet->getCell('J'.$row)->getValue() . '  '.
+                      'Capital inicial : '. $worksheet->getCell('M'.$row)->getValue(). '  '.
+                      'Total : '.  $worksheet->getCell('N'.$row)->getValue(). '  '.
+                      'Fecha mora : '.  date('d-m-Y',strtotime($fecha_mora));
+              $connection->insert('deudas_gestiones', [
+                  'deuda_id' => $deuda_id,
+                  'descripcion' => $desc,
+                  'modified' => new \DateTime('now'),
+                  'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
+
+
 
               }
               elseif ($resultDni->count() == 1) {
@@ -256,22 +291,37 @@ class CarterasController extends AppController
                     'created' => new \DateTime('now')],
                     ['created' => 'datetime' , 'modified' => 'datetime']);
 
-                  ///insertar gestion informando a quien fue enviada la deuda
-                  //ver como traer el id de la deuda, si buscandola por todos los campos o como
-                  // $connection->insert('deudas_gestiones', [
-                  //     'deuda_id' => $id,
-                  //     'cartera_id' => $idCartera,
-                  //     'usuario_id' => $user_id,
-                  //     'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                  //     'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
-                  //     'fecha_mora' => $fecha_mora,
-                  //     'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                  //     'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                  //     'total' => $worksheet->getCell('N'.$row)->getValue(),
-                  //     'active' => true,
-                  //     'modified' => new \DateTime('now'),
-                  //     'created' => new \DateTime('now')],
-                  //     ['created' => 'datetime' , 'modified' => 'datetime']);
+                    /////me traigo el id de la deuda recien creada
+              $deuda_id = $connection->execute("SELECT Id FROM deudas WHERE deudor_id = :deudor_id AND
+                                               cartera_id = :cartera_id AND
+                                               usuario_id = :usuario_id AND
+                                               producto = :producto AND
+                                               dias_mora = :dias_mora AND
+                                               numero_producto = :numero_producto AND
+                                               capital_inicial = :capital_inicial AND
+                                               total = :total" ,   ['deudor_id' => $id,
+                                                        'cartera_id' => $idCartera,
+                                                        'usuario_id' => $user_id,
+                                                        'producto' => $worksheet->getCell('I'.$row)->getValue(),
+                                                        'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                                                        'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
+                                                        'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
+                                                        'total' => $worksheet->getCell('N'.$row)->getValue()]);
+            $deuda_id = $deuda_id->fetchAll()[0][0];
+
+            //hago insert en deudas gestiones informando la asigancion de la deuda
+            //la variable $desc tendrá la descripcion de la dueda asignada
+            $desc = 'Se te ha asignado el siguiente caso :  '.
+                    'Producto : '. $worksheet->getCell('I'.$row)->getValue() . '  '.
+                    'Numero de producto : '.  $worksheet->getCell('J'.$row)->getValue() . '  '.
+                    'Capital inicial : '. $worksheet->getCell('M'.$row)->getValue(). '  '.
+                    'Total : '.  $worksheet->getCell('N'.$row)->getValue(). '  '.
+                    'Fecha mora : '.  date('d-m-Y',strtotime($fecha_mora));
+            $connection->insert('deudas_gestiones', [
+                'deuda_id' => $deuda_id,
+                'descripcion' => $desc,
+                'modified' => new \DateTime('now'),
+                'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
 
 
 
@@ -288,7 +338,7 @@ class CarterasController extends AppController
 
             } // fin FOR
 
-
+            $this->Flash->success("Cartera guardada");
 
           } //fin if move_uploaded_file
           else {

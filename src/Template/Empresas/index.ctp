@@ -21,7 +21,7 @@
             <tr>
                 <td><?= $this->Number->format($empresa->Id) ?></td>
                 <td><?= h($empresa->descripcion) ?></td>
-<!--                <td><?= h($empresa->created) ?></td>-->
+<!--                <td><?= h($empresa->created->format('d-m-Y')) ?></td>-->
                 <td><?= h($empresa->modified->format('d-m-Y')) ?></td>
                 <td><?= h($empresa->cuit) ?></td>
                 <td><?= h($empresa->direccion) ?></td>

@@ -11,7 +11,9 @@
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('deudor_id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('cartera_id') ?></th>
+                <?php if ($current_user['role_id'] == 1): ?>
                 <th scope="col"><?= $this->Paginator->sort('user_id', ['label'=>'Asignado a:']) ?></th>
+                <?php endif; ?>
                 <th scope="col"><?= $this->Paginator->sort('producto') ?></th>
                 
                 <th scope="col"><?= $this->Paginator->sort('numero_producto') ?></th>
@@ -29,12 +31,22 @@
 
                 <td><?= $deuda->has('deudore') ? $this->Html->link($deuda->deudore->presentacionSimple, ['controller' => 'Deudores', 'action' => 'view', $deuda->deudore->Id]) : '' ?></td>
                 <td><?= $deuda->has('cartera') ? $this->Html->link($deuda->cartera->descripcion, ['controller' => 'Carteras', 'action' => 'view', $deuda->cartera->Id]) : '' ?></td>
+                <?php if ($current_user['role_id'] == 1): ?>
                  <td><?= $deuda->has('user') ? $this->Html->link($deuda->user->presentacion, ['controller' => 'Carteras', 'action' => 'view', $deuda->cartera->Id]) : '' ?></td>
+                <?php endif; ?>
                 <td><?= h($deuda->producto) ?></td>
                 <td><?= h($deuda->numero_producto) ?></td>
-                <td><?= $this->Number->format($deuda->capital_inicial) ?></td>
-                <td><?= $this->Number->format($deuda->total) ?></td>
-                <td><?= h($deuda->fecha_mora) ?></td>
+                <td><?= $this->Number->format($deuda->capital_inicial,[
+                                        'before' => '$',
+                                        'locale' => 'es_Ar'
+                                        ])  ?>
+                </td>
+                <td><?= $this->Number->format($deuda->total,[
+                                        'before' => '$',
+                                        'locale' => 'es_Ar'
+                                        ])  ?>
+                </td>
+                <td><?= h($deuda->fecha_mora->format('d-m-Y')) ?></td>
                 <td><?= h($deuda->dias_mora) ?></td>
                 <td>
                   <?= $this->Html->link(__('Nueva'), ['controller' => 'DeudasGestiones', 'action' => 'add', $deuda->Id],['class' => 'btn btn-sm btn-primary']) ?>

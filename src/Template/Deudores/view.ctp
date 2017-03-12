@@ -51,12 +51,12 @@
 <!--
         <tr>
             <th scope="row"><?= __('Created') ?></th>
-            <td><?= h($deudore->created) ?></td>
+            <td><?= h($deudore->created->format('d-m-Y')) ?></td>
         </tr>
 -->
         <tr>
             <th scope="row"><?= __('Modificado') ?></th>
-            <td><?= h($deudore->modified) ?></td>
+            <td><?= h($deudore->modified->format('d-m-Y') ?></td>
         </tr>
             <?php if (!empty($deudore->deudas)): ?>
             <?php foreach ($deudore->deudores_telefonos as $telefono): ?>
@@ -96,7 +96,7 @@
                 <td><?= h($deuda->numero_producto) ?></td>
                 <td><?= $this->Number->format($deuda->capital_inicial) ?></td>
                 <td><?= $this->Number->format($deuda->total) ?></td>
-                <td><?= h($deuda->fecha_mora) ?></td>
+                <td><?= h($deuda->fecha_mora->format('d-m-Y') ?></td>
                 <td><?= h($deuda->dias_mora) ?></td>
                  <td class="actions">
                   <?= $this->Html->link(__('Nueva gestion'), ['controller' => 'DeudasGestiones', 'action' => 'add', $deuda->Id],['class' => 'btn btn-sm btn-primary']) ?>

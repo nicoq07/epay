@@ -45,7 +45,7 @@
                 <td><?= h($deuda->numero_producto) ?></td>
                 <td><?= $this->Number->format($deuda->capital_inicial) ?></td>
                 <td><?= $this->Number->format($deuda->total) ?></td>
-                <td><?= h($deuda->fecha_mora) ?></td>
+                <td><?= h($deuda->fecha_mora->format('d-m-Y')) ?></td>
                 <td><?= h($deuda->dias_mora) ?></td>
                 <td><?= $this->Form->checkbox('',['name' => 'deudas[]' ,'label' => false ,'value' => $deuda->Id,'hiddenField' => false]) ?></td>
             </tr>

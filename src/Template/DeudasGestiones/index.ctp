@@ -15,7 +15,7 @@
                 <?php foreach ($deudasGestiones as $deudasGestione): ?>
                 <tr>
                     <td><?= h($deudasGestione->descripcion) ?></td>
-                    <td><?= h($deudasGestione->modified) ?></td>
+                    <td><?= h($deudasGestione->modified->format('d-m-Y')) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $deudasGestione->Id],['class' => 'btn btn-sm btn-info']) ?>
                         <!-- <?= $this->Html->link(__('Edit'), ['action' => 'edit', $deudasGestione->Id],['class' => 'btn btn-sm btn-warning']) ?> -->
