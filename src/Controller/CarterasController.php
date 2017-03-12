@@ -117,6 +117,60 @@ class CarterasController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
+   public function exportar($idCartera = null)
+   {
+     $query = 'SELECT
+              deudor.nombre as Nombre,
+              deudor.dni as DNI,
+              de.capital_inicial as capitalIni,
+              de.total as Total,
+              de.acuerdo as AcuerdoPago,
+              e.descripcion,
+              concat(u.nombre,' ',u.apellido) as operador ,
+              g.descripcion as ultiGestion,
+              g.created as fechaGestion
+              FROM
+              carteras as c ,
+              deudas as de ,
+              deudas_gestiones as g ,
+              users as u ,
+              deudores as deudor,
+              estados_deudas e
+              WHERE
+              c.Id= de.cartera_id AND
+              de.deudor_id = deudor.Id AND
+              de.usuario_id = u.id AND
+              de.Id = g.deuda_id AND
+              de.estado_id = e.id';
+              /*
+              SELECT
+deudor.nombre as Nombre,
+deudor.dni as DNI,
+de.capital_inicial as capitalIni,
+de.total as Total,
+de.acuerdo as AcuerdoPago,
+e.descripcion,
+concat(u.nombre,' ',u.apellido) as operador ,
+g.descripcion as ultiGestion,
+g.created as fechaGestion
+FROM
+carteras as c ,
+deudas as de ,
+deudas_gestiones as g ,
+users as u ,
+deudores as deudor,
+estados_deudas e
+WHERE
+c.Id= de.cartera_id AND
+de.deudor_id = deudor.Id AND
+de.usuario_id = u.id AND
+g.Id = (SELECT id FROM deudas_gestiones dg ORDER BY ABS(DATEDIFF(dg.created, NOW())) LIMIT 1) AND
+de.Id = g.deuda_id AND
+de.estado_id = e.id/*/
+
+
+   }
+
     public function subir($idCartera = null)
     {
         // require_once(ROOT . DS . 'src' . DS . 'Classes' . DS . 'PHPExcel.php');

@@ -31,6 +31,7 @@
 <div class="well">
    
       <?= $this->Html->link(__('Importar archivo'), ['controller' => 'Carteras', 'action' => 'subir', $cartera->Id],['class' => 'btn btn-sm btn-success']) ?>
+    <?= $this->Html->link(__('Exportar resumen'), ['controller' => 'Carteras', 'action' => 'exportar', $cartera->Id],['class' => 'btn btn-sm btn-info']) ?>
             <h4><?= __('Deudas de la cartera') ?></h4>
             
        
