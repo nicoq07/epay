@@ -119,54 +119,12 @@ class CarterasController extends AppController
 
    public function exportar($idCartera = null)
    {
-    //  $query = 'SELECT
-    //           deudor.nombre as Nombre,
-    //           deudor.dni as DNI,
-    //           de.capital_inicial as capitalIni,
-    //           de.total as Total,
-    //           de.acuerdo as AcuerdoPago,
-    //           e.descripcion,
-    //           concat(u.nombre,' ',u.apellido) as operador ,
-    //           g.descripcion as ultiGestion,
-    //           g.created as fechaGestion
-    //           FROM
-    //           carteras as c ,
-    //           deudas as de ,
-    //           deudas_gestiones as g ,
-    //           users as u ,
-    //           deudores as deudor,
-    //           estados_deudas e
-    //           WHERE
-    //           c.Id= de.cartera_id AND
-    //           de.deudor_id = deudor.Id AND
-    //           de.usuario_id = u.id AND
-    //           de.Id = g.deuda_id AND
-    //           de.estado_id = e.id';
-              /*
-              SELECT
-deudor.nombre as Nombre,
-deudor.dni as DNI,
-de.capital_inicial as capitalIni,
-de.total as Total,
-de.acuerdo as AcuerdoPago,
-e.descripcion,
-concat(u.nombre,' ',u.apellido) as operador ,
-g.descripcion as ultiGestion,
-g.created as fechaGestion
-FROM
-carteras as c ,
-deudas as de ,
-deudas_gestiones as g ,
-users as u ,
-deudores as deudor,
-estados_deudas e
-WHERE
-c.Id= de.cartera_id AND
-de.deudor_id = deudor.Id AND
-de.usuario_id = u.id AND
-g.Id = (SELECT id FROM deudas_gestiones dg ORDER BY ABS(DATEDIFF(dg.created, NOW())) LIMIT 1) AND
-de.Id = g.deuda_id AND
-de.estado_id = e.id/*/
+    /* SELECT deu.nombre, deu.dni, d.producto, d.numero_producto, d.capital_inicial, d.total, dg.descripcion, dg.created , CONCAT(u.nombre,' ',u.apellido) from deudas d
+INNER JOIN deudores deu ON deu.Id = d.deudor_id
+INNER JOIN users u ON u.id = d.usuario_id
+INNER JOIN estados_deudas e ON e.id = d.estado_id
+INNER JOIN deudas_gestiones dg ON dg.deuda_id = d.Id
+WHERE dg.Id = ( SELECT MAX(dg2.id) FROM deudas_gestiones dg2 where dg2.deuda_id = d.Id  group by dg2.deuda_id )*/
 
 
    }
