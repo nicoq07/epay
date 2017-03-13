@@ -120,9 +120,9 @@ class DeudasController extends AppController
       ]);
       if ($this->request->is(['patch', 'post', 'put'])) {
 
-        if ($this->request->data['id_estado'] = 7)
+        if ($this->request->data['id_estado'] = 6)
         {
-            $this->request->data['contactado'] = true;
+            $this->request->data['acuerdo'] = true;
         }
 
           $deuda = $this->Deudas->patchEntity($deuda, $this->request->data);

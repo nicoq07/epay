@@ -33,8 +33,8 @@
 
         </tr>
         <tr>
-                <th scope="row"><?= __('Fue contactado') ?></th>
-                <td><?= $deuda->contactado ? __('Si') : __('No'); ?></td>
+                <th scope="row"><?= __('Hubo acuerdo?') ?></th>
+                <td><?= $deuda->acuerdo ? __('Si') : __('No'); ?></td>
             </tr>
         <tr>
             <th scope="row"><?= __('Operador asignado') ?></th>
@@ -51,7 +51,7 @@
             </td>
         </tr>
         <tr>
-          
+
             <th scope="row"><?= __('Total') ?></th>
             <td><?= $this->Number->format($deuda->total,[
                                   'before' => '$',
