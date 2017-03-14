@@ -119,15 +119,144 @@ class CarterasController extends AppController
 
    public function exportar($idCartera = null)
    {
-    /* SELECT deu.nombre, deu.dni, d.producto, d.numero_producto, d.capital_inicial, d.total, dg.descripcion, dg.created , CONCAT(u.nombre,' ',u.apellido) from deudas d
-INNER JOIN deudores deu ON deu.Id = d.deudor_id
-INNER JOIN users u ON u.id = d.usuario_id
-INNER JOIN estados_deudas e ON e.id = d.estado_id
-INNER JOIN deudas_gestiones dg ON dg.deuda_id = d.Id
-WHERE dg.Id = ( SELECT MAX(dg2.id) FROM deudas_gestiones dg2 where dg2.deuda_id = d.Id  group by dg2.deuda_id )*/
+
+      $queryReporte = "SELECT
+                        deu.nombre nom, deu.dni dni, d.producto prod, d.numero_producto nump, d.capital_inicial capini, d.total total, e.descripcion estado ,
+                        dg.descripcion gestion, dg.created fecha , CONCAT(u.nombre,' ',u.apellido) operador
+                        from deudas d
+                        INNER JOIN deudores deu ON deu.Id = d.deudor_id
+                        INNER JOIN users u ON u.id = d.usuario_id
+                        INNER JOIN estados_deudas e ON e.id = d.estado_id
+                        INNER JOIN deudas_gestiones dg ON dg.deuda_id = d.Id
+                        WHERE dg.Id = ( SELECT MAX(dg2.id) FROM deudas_gestiones dg2 where dg2.deuda_id = d.Id  group by dg2.deuda_id )";
+
+            $connection = ConnectionManager::get('default');
+            $resultExport = $connection
+                            ->execute($queryReporte)
+                            ->fetchAll('assoc');
+
+          //  debug($resultExport);
+
+              //////////////////////////////
 
 
-   }
+	$objPHPExcel = new \PHPExcel();
+
+	$objPHPExcel->
+		getProperties()
+			->setCreator($this->current_user['nombre']. " ".$this->current_user['apellido'])
+			->setTitle("Reporte");
+
+
+	// Seteo el formato por default de los bordes para las celdas
+	$styleCells = array(
+      'borders' => array(
+          'allborders' => array(
+              'style' => \PHPExcel_Style_Border::BORDER_THIN
+          )
+      )
+	);
+
+	$objPHPExcel->setActiveSheetIndex(0)
+				->setCellValue('A1', 'Nombre y Apellido')
+				->setCellValue('B1', 'DNI')
+				->setCellValue('C1', 'Producto')
+				->setCellValue('D1', 'Numero Producto')
+				->setCellValue('E1', 'Capital Inicial')
+				->setCellValue('F1', 'Total')
+				->setCellValue('G1', 'Estado')
+				->setCellValue('H1', 'Ultima Gestion')
+        ->setCellValue('I1', 'Fecha Gestion')
+        ->setCellValue('J1', 'Operador');
+
+
+        	$_row = 1;
+
+        	foreach ($resultExport as $item)
+          {
+        		$_row = $_row +1;
+
+
+            $fecha = date('d-m-Y', strtotime($item['fecha']));
+        		$objPHPExcel->setActiveSheetIndex(0)
+        				->setCellValue('A'.$_row, $item['nom'])
+        				->setCellValue('B'.$_row, $item['dni'])
+        				->setCellValue('C'.$_row, $item['prod'])
+        				->setCellValue('D'.$_row, $item['nump'])
+        				->setCellValue('E'.$_row, $item['capini'])
+        				->setCellValue('F'.$_row, $item['total'])
+        				->setCellValue('G'.$_row, $item['estado'])
+                ->setCellValue('H'.$_row, $item['gestion'])
+        				->setCellValue('I'.$_row, $fecha)
+                ->setCellValue('J'.$_row, $item['operador']);
+
+        		// Le aplico a todas las celdas el formato de borde.
+        		$objPHPExcel->getActiveSheet()->getStyle('A'.$_row)->applyFromArray($styleCells);
+        		$objPHPExcel->getActiveSheet()->getStyle('B'.$_row)->applyFromArray($styleCells);
+        		$objPHPExcel->getActiveSheet()->getStyle('C'.$_row)->applyFromArray($styleCells);
+        		$objPHPExcel->getActiveSheet()->getStyle('D'.$_row)->applyFromArray($styleCells);
+        		$objPHPExcel->getActiveSheet()->getStyle('E'.$_row)->applyFromArray($styleCells);
+        		$objPHPExcel->getActiveSheet()->getStyle('F'.$_row)->applyFromArray($styleCells);
+        		$objPHPExcel->getActiveSheet()->getStyle('G'.$_row)->applyFromArray($styleCells);
+        		$objPHPExcel->getActiveSheet()->getStyle('H'.$_row)->applyFromArray($styleCells);
+            $objPHPExcel->getActiveSheet()->getStyle('I'.$_row)->applyFromArray($styleCells);
+        		$objPHPExcel->getActiveSheet()->getStyle('J'.$_row)->applyFromArray($styleCells);
+
+        	}
+
+
+          	// Ajusto el ancho de las columnas
+          	foreach (range('A', $objPHPExcel->getActiveSheet()->getHighestDataColumn()) as $col) {
+                  $objPHPExcel->getActiveSheet()
+                          ->getColumnDimension($col)
+                          ->setAutoSize(true);
+              }
+
+          //
+          	// Seteo el formato por default de los bordes para las celdas del encabezado y las pongo en negrita
+          	$styleHeader = array(
+                'borders' => array(
+                    'allborders' => array(
+                        'style' => \PHPExcel_Style_Border::BORDER_THIN
+                    )
+                ),
+          	  'font' => array(
+          			'bold' => true
+          			)
+          	);
+          	$objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeader);
+          	$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeader);
+          	$objPHPExcel->getActiveSheet()->getStyle('C1')->applyFromArray($styleHeader);
+          	$objPHPExcel->getActiveSheet()->getStyle('D1')->applyFromArray($styleHeader);
+          	$objPHPExcel->getActiveSheet()->getStyle('E1')->applyFromArray($styleHeader);
+          	$objPHPExcel->getActiveSheet()->getStyle('F1')->applyFromArray($styleHeader);
+          	$objPHPExcel->getActiveSheet()->getStyle('G1')->applyFromArray($styleHeader);
+          	$objPHPExcel->getActiveSheet()->getStyle('H1')->applyFromArray($styleHeader);
+            $objPHPExcel->getActiveSheet()->getStyle('I1')->applyFromArray($styleHeader);
+            $objPHPExcel->getActiveSheet()->getStyle('J1')->applyFromArray($styleHeader);
+
+
+
+          	// Seteo el nombre del archivo
+
+          	$_file_name_aux = "Reporte ". date('d-m-Y');
+
+          	//header("Content-Type:   application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
+            header('Content-Type: application/vnd.ms-excel');
+          	header('Content-Disposition: attachment;filename="'.$_file_name_aux.'".xls"');
+          	header('Cache-Control: max-age=0');
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+            header("Pragma: public");
+
+          	$objWriter=\PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
+          	$objWriter->save('php://output');
+            return;
+
+////////
+
+            ///////////////////////////////////////////////////////////////////////////////
+          }
 
     public function subir($idCartera = null)
     {
