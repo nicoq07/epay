@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
+use Cake\Datasource\ConnectionManager;
 use Cake\I18n\Number;
 /**
  * Deudas Controller
@@ -133,10 +134,10 @@ class DeudasController extends AppController
           }
           $this->Flash->error(__('Error al guardarse. Reintente.'));
       }
-      $deudores = $this->Deudas->Deudores->find('list', ['limit' => 9999]);
-      $carteras = $this->Deudas->Carteras->find('list', ['limit' => 9999]);
-      $users = $this->Deudas->Users->find('list', ['limit' => 9999]);
-      $estados_deuda = $this->Deudas->EstadosDeudas->find('list', ['limit' => 9999]);
+      $deudores = $this->Deudas->Deudores->find('list');
+      $carteras = $this->Deudas->Carteras->find('list');
+      $users = $this->Deudas->Users->find('list');
+      $estados_deuda = $this->Deudas->EstadosDeudas->find('list');
       $this->set(compact('deuda', 'deudores', 'carteras', 'users','estados_deuda'));
       $this->set('_serialize', ['deuda']);
 
@@ -197,7 +198,7 @@ class DeudasController extends AppController
 
       if ($this->request->is(['patch', 'post', 'put']))
       {
-        $user = $this->request->data['usuario_id'];
+          $user = $this->request->data['usuario_id'];
           if (empty($this->request->data['usuario_id']))
           {
             $user = null;
@@ -210,16 +211,20 @@ class DeudasController extends AppController
           else {
             $idDeudas = $this->request->data['deudas'];
             $deudasTable = TableRegistry::get('Deudas');
-            //  debug($idDeudas);
-            // exit();
+            $userTable = TableRegistry::get('Users');
+            $usuario = $userTable->get($user);
+            $connection = ConnectionManager::get('default');
+            $desc = 'Caso asignado a '.$usuario->presentacion . ' el día :'. date('d-m-Y');
             foreach ($idDeudas as $id)
             {
                 $deuda = $deudasTable->get($id);
                 $deuda['usuario_id'] = $user;
                 $deudasTable->save($deuda);
-
-
-
+                $connection->insert('deudas_gestiones', [
+                    'deuda_id' => $id,
+                    'descripcion' => $desc,
+                    'modified' => new \DateTime('now'),
+                    'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
             }
           }
 

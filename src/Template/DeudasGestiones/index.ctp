@@ -8,6 +8,7 @@
                 <tr>
                     <th scope="col"><?= $this->Paginator->sort('descripcion', ['label' => 'Descripción']) ?></th>
                     <th scope="col"><?= $this->Paginator->sort('modified', ['label' => 'Ult. vez actualizada']) ?></th>
+                    <th scope="col"><?= h("Deuda") ?></th>
                     <th scope="col" class="actions"><?= __('Actions') ?></th>
                 </tr>
             </thead>
@@ -16,6 +17,9 @@
                 <tr>
                     <td><?= h($deudasGestione->descripcion) ?></td>
                     <td><?= h($deudasGestione->modified->format('d-m-Y')) ?></td>
+                    <td>
+                      <?= $this->Html->link(__('Ir'), ['controller' => 'Deudas'  , 'action' => 'view', $deudasGestione->deuda_id],['class' => 'btn btn-sm btn-success']) ?>
+                    </td>
                     <td class="actions">
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $deudasGestione->Id],['class' => 'btn btn-sm btn-info']) ?>
                         <!-- <?= $this->Html->link(__('Edit'), ['action' => 'edit', $deudasGestione->Id],['class' => 'btn btn-sm btn-warning']) ?> -->
