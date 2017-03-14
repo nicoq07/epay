@@ -46,7 +46,9 @@
 -->
         <tr>
             <th scope="row"><?= __('Dni') ?></th>
-            <td><?= $this->Number->format($deudore->dni) ?></td>
+            <td><?= $this->Number->format($deudore->dni,[
+                                  'locale' => 'es_Ar',
+                                  ]) ?></td>
         </tr>
 <!--
         <tr>
@@ -94,8 +96,14 @@
             <tr>
                 <td><?= h($deuda->producto) ?></td>
                 <td><?= h($deuda->numero_producto) ?></td>
-                <td><?= $this->Number->format($deuda->capital_inicial) ?></td>
-                <td><?= $this->Number->format($deuda->total) ?></td>
+                <td><?= $this->Number->format($deuda->capital_inicial,[
+                                      'before' => '$',
+                                      'locale' => 'es_Ar'
+                                      ]) ?></td>
+                <td><?= $this->Number->format($deuda->total,[
+                                      'before' => '$',
+                                      'locale' => 'es_Ar'
+                                      ])?></td>
                 <td><?= h($deuda->fecha_mora->format('d-m-Y')) ?></td>
                 <td><?= h($deuda->dias_mora) ?></td>
                  <td class="actions">

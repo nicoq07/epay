@@ -122,7 +122,7 @@ class CarterasController extends AppController
 
       $queryReporte = "SELECT
                         deu.nombre nom, deu.dni dni, d.producto prod, d.numero_producto nump, d.capital_inicial capini, d.total total, e.descripcion estado ,
-                        dg.descripcion gestion, dg.created fecha , CONCAT(u.nombre,' ',u.apellido) operador
+                        d.fecha_mora fechamora , dg.descripcion gestion, dg.created fecha , CONCAT(u.nombre,' ',u.apellido) operador
                         from deudas d
                         INNER JOIN deudores deu ON deu.Id = d.deudor_id
                         INNER JOIN users u ON u.id = d.usuario_id
@@ -165,9 +165,10 @@ class CarterasController extends AppController
 				->setCellValue('E1', 'Capital Inicial')
 				->setCellValue('F1', 'Total')
 				->setCellValue('G1', 'Estado')
-				->setCellValue('H1', 'Ultima Gestion')
-        ->setCellValue('I1', 'Fecha Gestion')
-        ->setCellValue('J1', 'Operador');
+				->setCellValue('H1', 'Fecha Mora')
+        ->setCellValue('I1', 'Ultima Gestion')
+        ->setCellValue('J1', 'Fecha Gestion')
+        ->setCellValue('K1', 'Operador');
 
 
         	$_row = 1;
@@ -176,8 +177,8 @@ class CarterasController extends AppController
           {
         		$_row = $_row +1;
 
-
-            $fecha = date('d-m-Y', strtotime($item['fecha']));
+            $fechaMora = date('d-m-Y', strtotime($item['fechamora']));
+            $fechaGestion = date('d-m-Y', strtotime($item['fecha']));
         		$objPHPExcel->setActiveSheetIndex(0)
         				->setCellValue('A'.$_row, $item['nom'])
         				->setCellValue('B'.$_row, $item['dni'])
@@ -186,9 +187,10 @@ class CarterasController extends AppController
         				->setCellValue('E'.$_row, $item['capini'])
         				->setCellValue('F'.$_row, $item['total'])
         				->setCellValue('G'.$_row, $item['estado'])
-                ->setCellValue('H'.$_row, $item['gestion'])
-        				->setCellValue('I'.$_row, $fecha)
-                ->setCellValue('J'.$_row, $item['operador']);
+                ->setCellValue('H'.$_row, $fechaMora)
+                ->setCellValue('I'.$_row, $item['gestion'])
+        				->setCellValue('J'.$_row, $fechaGestion)
+                ->setCellValue('K'.$_row, $item['operador']);
 
         		// Le aplico a todas las celdas el formato de borde.
         		$objPHPExcel->getActiveSheet()->getStyle('A'.$_row)->applyFromArray($styleCells);
@@ -201,6 +203,7 @@ class CarterasController extends AppController
         		$objPHPExcel->getActiveSheet()->getStyle('H'.$_row)->applyFromArray($styleCells);
             $objPHPExcel->getActiveSheet()->getStyle('I'.$_row)->applyFromArray($styleCells);
         		$objPHPExcel->getActiveSheet()->getStyle('J'.$_row)->applyFromArray($styleCells);
+            $objPHPExcel->getActiveSheet()->getStyle('K'.$_row)->applyFromArray($styleCells);
 
         	}
 
@@ -234,6 +237,7 @@ class CarterasController extends AppController
           	$objPHPExcel->getActiveSheet()->getStyle('H1')->applyFromArray($styleHeader);
             $objPHPExcel->getActiveSheet()->getStyle('I1')->applyFromArray($styleHeader);
             $objPHPExcel->getActiveSheet()->getStyle('J1')->applyFromArray($styleHeader);
+            $objPHPExcel->getActiveSheet()->getStyle('K1')->applyFromArray($styleHeader);
 
 
 

@@ -28,7 +28,9 @@
 <!--                    <td><?= h($deudore->active) ?></td>-->
 <!--                    <td><?= h($deudore->created->format('d-m-Y')) ?></td>-->
                     <td><?= h($deudore->nombre) ?></td>
-                    <td><?= h($deudore->dni) ?></td>
+                    <td><?= $this->Number->format($deudore->dni,[
+                                          'locale' => 'es_Ar',
+                                          ]) ?></td>
                     <td><?= h($deudore->modified->format('d-m-Y')) ?></td>
                     <td><?= h($deudore->direccion) ?></td>
                     <td class="actions">
