@@ -262,7 +262,7 @@ class CarterasController extends AppController
     {
         // require_once(ROOT . DS . 'src' . DS . 'Classes' . DS . 'PHPExcel.php');
         $connection = ConnectionManager::get('default');
-
+        $connection->begin();
         $cartera = $this->Carteras->newEntity();
 
         $id = null;
@@ -290,6 +290,7 @@ class CarterasController extends AppController
               // si el count es 1, ese deudor ya existe no lo inserto pero cargo sus deudas.
               if ($resultDni->count() == 0)
               {
+
                   $connection->insert('deudores', [
                       'calificacion' => '',
                       'nombre' => $worksheet->getCell('A'.$row)->getValue(),
@@ -474,17 +475,19 @@ class CarterasController extends AppController
               {
 
                 // si el count no devuelve ni 1 ni 0 algo esta mal
-                die('algo salio mal...');
+                $connection->rollback();
+                $this->Flash->error("Tenemos un problema para cargar el archivo");
 
               }
 
 
             } // fin FOR
-
+              $connection->commit();
             $this->Flash->success("Cartera guardada");
 
           } //fin if move_uploaded_file
           else {
+            $connection->rollback();
            $this->Flash->error("Tenemos un problema para cargar el archivo");
           }
 
