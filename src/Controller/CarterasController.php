@@ -119,54 +119,12 @@ class CarterasController extends AppController
 
    public function exportar($idCartera = null)
    {
-    //  $query = 'SELECT
-    //           deudor.nombre as Nombre,
-    //           deudor.dni as DNI,
-    //           de.capital_inicial as capitalIni,
-    //           de.total as Total,
-    //           de.acuerdo as AcuerdoPago,
-    //           e.descripcion,
-    //           concat(u.nombre,' ',u.apellido) as operador ,
-    //           g.descripcion as ultiGestion,
-    //           g.created as fechaGestion
-    //           FROM
-    //           carteras as c ,
-    //           deudas as de ,
-    //           deudas_gestiones as g ,
-    //           users as u ,
-    //           deudores as deudor,
-    //           estados_deudas e
-    //           WHERE
-    //           c.Id= de.cartera_id AND
-    //           de.deudor_id = deudor.Id AND
-    //           de.usuario_id = u.id AND
-    //           de.Id = g.deuda_id AND
-    //           de.estado_id = e.id';
-              /*
-              SELECT
-deudor.nombre as Nombre,
-deudor.dni as DNI,
-de.capital_inicial as capitalIni,
-de.total as Total,
-de.acuerdo as AcuerdoPago,
-e.descripcion,
-concat(u.nombre,' ',u.apellido) as operador ,
-g.descripcion as ultiGestion,
-g.created as fechaGestion
-FROM
-carteras as c ,
-deudas as de ,
-deudas_gestiones as g ,
-users as u ,
-deudores as deudor,
-estados_deudas e
-WHERE
-c.Id= de.cartera_id AND
-de.deudor_id = deudor.Id AND
-de.usuario_id = u.id AND
-g.Id = (SELECT id FROM deudas_gestiones dg ORDER BY ABS(DATEDIFF(dg.created, NOW())) LIMIT 1) AND
-de.Id = g.deuda_id AND
-de.estado_id = e.id/*/
+    /* SELECT deu.nombre, deu.dni, d.producto, d.numero_producto, d.capital_inicial, d.total, dg.descripcion, dg.created , CONCAT(u.nombre,' ',u.apellido) from deudas d
+INNER JOIN deudores deu ON deu.Id = d.deudor_id
+INNER JOIN users u ON u.id = d.usuario_id
+INNER JOIN estados_deudas e ON e.id = d.estado_id
+INNER JOIN deudas_gestiones dg ON dg.deuda_id = d.Id
+WHERE dg.Id = ( SELECT MAX(dg2.id) FROM deudas_gestiones dg2 where dg2.deuda_id = d.Id  group by dg2.deuda_id )*/
 
 
    }
@@ -246,10 +204,12 @@ de.estado_id = e.id/*/
 
                   //Busco el operador asignado, ellos me pasan el nombre completo y yo tengo
                   //que traerme el id
-
-                  $user_id = $connection->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
-                  $user_id = $user_id->fetchAll()[0][0];
-
+                  $user_id = null;
+                  if ($worksheet->getCell('O'.$row)->getValue() != null && !empty($worksheet->getCell('O'.$row)->getValue()))
+                  {
+                    $user_id = $connection->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
+                    $user_id = current($user_id->fetchAll('assoc'));
+                  }
                   //cargo la deuda
                   ///deuda
                   $hoja[$row]['producto'] = $worksheet->getCell('I'.$row)->getValue();
@@ -269,7 +229,7 @@ de.estado_id = e.id/*/
                 $connection->insert('deudas', [
                       'deudor_id' => $id,
                       'cartera_id' => $idCartera,
-                      'usuario_id' => $user_id,
+                      'usuario_id' => $user_id['id'],
                       'producto' => $worksheet->getCell('I'.$row)->getValue(),
                       'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
                       'fecha_mora' => $fecha_mora,
@@ -281,38 +241,35 @@ de.estado_id = e.id/*/
                       'created' => new \DateTime('now')],
                       ['created' => 'datetime' , 'modified' => 'datetime']);
 
-                      /////me traigo el id de la deuda recien creada
-                $deuda_id = $connection->execute("SELECT Id FROM deudas WHERE deudor_id = :deudor_id AND
-                                                 cartera_id = :cartera_id AND
-                                                 usuario_id = :usuario_id AND
-                                                 producto = :producto AND
-                                                 dias_mora = :dias_mora AND
-                                                 numero_producto = :numero_producto AND
-                                                 capital_inicial = :capital_inicial AND
-                                                 total = :total" ,   ['deudor_id' => $id,
-                                                          'cartera_id' => $idCartera,
-                                                          'usuario_id' => $user_id,
-                                                          'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                                                          'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
-                                                          'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                                                          'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                                                          'total' => $worksheet->getCell('N'.$row)->getValue()]);
-              $deuda_id = $deuda_id->fetchAll()[0][0];
+
 
               //hago insert en deudas gestiones informando la asigancion de la deuda
               //la variable $desc tendrá la descripcion de la dueda asignada
-              $desc = 'Se te ha asignado el siguiente caso :  '.
-                      'Producto : '. $worksheet->getCell('I'.$row)->getValue() . '  '.
-                      'Numero de producto : '.  $worksheet->getCell('J'.$row)->getValue() . '  '.
-                      'Capital inicial : '. $worksheet->getCell('M'.$row)->getValue(). '  '.
-                      'Total : '.  $worksheet->getCell('N'.$row)->getValue(). '  '.
-                      'Fecha mora : '.  date('d-m-Y',strtotime($fecha_mora));
-              $connection->insert('deudas_gestiones', [
-                  'deuda_id' => $deuda_id,
-                  'descripcion' => $desc,
-                  'modified' => new \DateTime('now'),
-                  'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
+              if (!empty($user_id['id']) && $user_id['id'] > 0)
+              {
+                /////me traigo el id de la deuda recien creada
+                  $deuda_id = $connection->execute("SELECT Id FROM deudas WHERE deudor_id = :deudor_id AND
+                                                   cartera_id = :cartera_id AND
+                                                   producto = :producto AND
+                                                   dias_mora = :dias_mora AND
+                                                   numero_producto = :numero_producto AND
+                                                   capital_inicial = :capital_inicial AND
+                                                   total = :total" ,   ['deudor_id' => $id,
+                                                            'cartera_id' => $idCartera,
+                                                            'producto' => $worksheet->getCell('I'.$row)->getValue(),
+                                                            'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                                                            'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
+                                                            'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
+                                                            'total' => $worksheet->getCell('N'.$row)->getValue()]);
+                 $deuda_id = current($deuda_id->fetchAll('assoc'));
 
+                  $desc = 'Caso asignado a '.$worksheet->getCell('O'.$row)->getValue() . ' el día :'. date('d-m-Y');
+                  $connection->insert('deudas_gestiones', [
+                      'deuda_id' => $deuda_id['Id'],
+                      'descripcion' => $desc,
+                      'modified' => new \DateTime('now'),
+                      'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
+                }
 
 
               }
@@ -327,13 +284,17 @@ de.estado_id = e.id/*/
                 //Busco el operador asignado, ellos me pasan el nombre completo y yo tengo
                 //que traerme el id
 
-                $user_id = $connection->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
-                $user_id = $user_id->fetchAll()[0][0];
+                $user_id = null;
+                if ($worksheet->getCell('O'.$row)->getValue() != null && !empty($worksheet->getCell('O'.$row)->getValue()))
+                {
+                  $user_id = $connection->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
+                  $user_id = current($user_id->fetchAll('assoc'));
+                }
                 /////////////////////////////////////////////////////////////////////////////////////
                 $connection->insert('deudas', [
                     'deudor_id' => $id,
                     'cartera_id' => $idCartera,
-                    'usuario_id' => $user_id,
+                    'usuario_id' => $user_id['id'],
                     'producto' => $worksheet->getCell('I'.$row)->getValue(),
                     'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
                     'fecha_mora' => $fecha_mora,
@@ -345,38 +306,37 @@ de.estado_id = e.id/*/
                     'created' => new \DateTime('now')],
                     ['created' => 'datetime' , 'modified' => 'datetime']);
 
-                    /////me traigo el id de la deuda recien creada
-              $deuda_id = $connection->execute("SELECT Id FROM deudas WHERE deudor_id = :deudor_id AND
-                                               cartera_id = :cartera_id AND
-                                               usuario_id = :usuario_id AND
-                                               producto = :producto AND
-                                               dias_mora = :dias_mora AND
-                                               numero_producto = :numero_producto AND
-                                               capital_inicial = :capital_inicial AND
-                                               total = :total" ,   ['deudor_id' => $id,
-                                                        'cartera_id' => $idCartera,
-                                                        'usuario_id' => $user_id,
-                                                        'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                                                        'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
-                                                        'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                                                        'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                                                        'total' => $worksheet->getCell('N'.$row)->getValue()]);
-            $deuda_id = $deuda_id->fetchAll()[0][0];
+
+
+
 
             //hago insert en deudas gestiones informando la asigancion de la deuda
             //la variable $desc tendrá la descripcion de la dueda asignada
-            $desc = 'Se te ha asignado el siguiente caso :  '.
-                    'Producto : '. $worksheet->getCell('I'.$row)->getValue() . '  '.
-                    'Numero de producto : '.  $worksheet->getCell('J'.$row)->getValue() . '  '.
-                    'Capital inicial : '. $worksheet->getCell('M'.$row)->getValue(). '  '.
-                    'Total : '.  $worksheet->getCell('N'.$row)->getValue(). '  '.
-                    'Fecha mora : '.  date('d-m-Y',strtotime($fecha_mora));
-            $connection->insert('deudas_gestiones', [
-                'deuda_id' => $deuda_id,
-                'descripcion' => $desc,
-                'modified' => new \DateTime('now'),
-                'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
-
+            // HAGO EL INSERT SI $user_id tiene dato
+            if (!empty($user_id['id']) && $user_id['id'] > 0)
+            {
+              /////me traigo el id de la deuda recien creada
+             $deuda_id = $connection->execute("SELECT Id FROM deudas WHERE deudor_id = :deudor_id AND
+                                         cartera_id = :cartera_id AND
+                                         producto = :producto AND
+                                         dias_mora = :dias_mora AND
+                                         numero_producto = :numero_producto AND
+                                         capital_inicial = :capital_inicial AND
+                                         total = :total" ,   ['deudor_id' => $id,
+                                                  'cartera_id' => $idCartera,
+                                                  'producto' => $worksheet->getCell('I'.$row)->getValue(),
+                                                  'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                                                  'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
+                                                  'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
+                                                  'total' => $worksheet->getCell('N'.$row)->getValue()]);
+                $deuda_id = current($deuda_id->fetchAll('assoc'));
+                $desc = 'Caso asignado a '.$worksheet->getCell('O'.$row)->getValue() . ' el día :'. date('d-m-Y');
+                $connection->insert('deudas_gestiones', [
+                    'deuda_id' => $deuda_id['Id'],
+                    'descripcion' => $desc,
+                    'modified' => new \DateTime('now'),
+                    'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
+              }
 
 
 

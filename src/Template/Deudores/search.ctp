@@ -6,7 +6,7 @@
     <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                
+
                 <th scope="col"><?= $this->Paginator->sort('Id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('nombre',['label' => 'Nombre y Apellido']) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('calificacion') ?></th>
@@ -20,14 +20,14 @@
         </thead>
         <tbody>
             <tr>
-                 
+
                 <?php if (!empty($deudore)){   ?>
-                
+
                 <td><?= $this->Number->format($deudore->Id) ?></td>
                 <td><?= h($deudore->calificacion) ?></td>
                 <td><?= h($deudore->active) ?></td>
                 <td><?= h($deudore->created->format('d-m-Y')) ?></td>
-                <td><?= h($deudore->modified->format('d-m-Y') ?></td>
+                <td><?= h($deudore->modified->format('d-m-Y')) ?></td>
                 <td><?= h($deudore->direccion) ?></td>
                 <td><?= $this->Number->format($deudore->dni) ?></td>
                 <td><?= h($deudore->nombre) ?></td>

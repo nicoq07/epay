@@ -56,7 +56,7 @@
 -->
         <tr>
             <th scope="row"><?= __('Modificado') ?></th>
-            <td><?= h($deudore->modified->format('d-m-Y') ?></td>
+            <td><?= h($deudore->modified->format('d-m-Y')) ?></td>
         </tr>
             <?php if (!empty($deudore->deudas)): ?>
             <?php foreach ($deudore->deudores_telefonos as $telefono): ?>
@@ -64,9 +64,9 @@
             <th scope="row"><?= __('Telefono ' . $telefono->descripcion) ?> <?= $this->Html->link(__('Editar'), ['controller' => 'DeudoresTelefonos', 'action' => 'edit', $telefono->Id],['class' => 'btn btn-sm']) ?></th>
             <td><?= $telefono->telefono; ?></td>
             <td class="actions">
-                  
+
             </td>
-                    
+
         </tr>
             <?php endforeach; ?>
         <?php endif; ?>
@@ -96,7 +96,7 @@
                 <td><?= h($deuda->numero_producto) ?></td>
                 <td><?= $this->Number->format($deuda->capital_inicial) ?></td>
                 <td><?= $this->Number->format($deuda->total) ?></td>
-                <td><?= h($deuda->fecha_mora->format('d-m-Y') ?></td>
+                <td><?= h($deuda->fecha_mora->format('d-m-Y')) ?></td>
                 <td><?= h($deuda->dias_mora) ?></td>
                  <td class="actions">
                   <?= $this->Html->link(__('Nueva gestion'), ['controller' => 'DeudasGestiones', 'action' => 'add', $deuda->Id],['class' => 'btn btn-sm btn-primary']) ?>
@@ -104,7 +104,7 @@
                     <?= $this->Html->link(__('Editar'), ['controller' => 'Deudas','action' => 'edit', $deuda->Id],['class' => 'btn btn-sm btn-warning']) ?>
                 </td>
             </tr>
-            
+
             <?php endforeach; ?>
         </table>
         <?php endif; ?>
