@@ -1,4 +1,5 @@
 <div class="carteras form large-9 medium-8 columns content">
+    <?= $this->element('volverAtras') ?>
     <?= $this->Form->create($cartera) ?>
     
     <fieldset>

@@ -1,4 +1,5 @@
 <div class="well">
+    <?= $this->element('volverAtras') ?>
     <div class="page-header">
         <h3><?= h($cartera->descripcion) ?></h3>    </div>
     <div class="table-responsive">
@@ -19,11 +20,11 @@
             </tr>
             <tr>
                 <th scope="row"><?= __('Creada') ?></th>
-                <td><?= h($cartera->created->format('d-m-Y')) ?></td>
+                <td><?= h($cartera->created->format('d/m/Y')) ?></td>
             </tr>
             <tr>
                 <th scope="row"><?= __('Modificada') ?></th>
-                <td><?= h($cartera->modified->format('d-m-Y')) ?></td>
+                <td><?= h($cartera->modified->format('d/m/Y')) ?></td>
             </tr>
         </table>
     </div>
@@ -43,10 +44,11 @@
                     <th scope="col"><?= __('Producto') ?></th>
                     <th scope="col"><?= __('Numero Producto') ?></th>
                     <th scope="col"><?= __('Capital Inicial') ?></th>
-                    <th scope="col"><?= __('Total') ?></th>
-                    <th scope="col"><?= __('Modificada') ?></th>
+                    <th scope="col"><?= __('Capital actualizado') ?></th>
                     <th scope="col"><?= __('Fecha Mora') ?></th>
-                    <th scope="col"><?= __('Dias Mora') ?></th>
+<!--                    <th scope="col"><?= __('Modificada') ?></th>-->
+                    
+<!--                    <th scope="col"><?= __('Dias Mora') ?></th>-->
                     <th scope="col" class="actions"><?= __('Acciones') ?></th>
                 </tr>
                 <?php foreach ($cartera->deudas as $deudas): ?>
@@ -62,9 +64,10 @@
                                   'before' => '$',
                                   'locale' => 'es_Ar'
                                   ]) ?></td>
-                    <td><?= h($deudas->modified->format('d-m-Y')) ?></td>
-                    <td><?= h($deudas->fecha_mora->format('d-m-Y')) ?></td>
-                    <td><?= h($deudas->dias_mora) ?></td>
+                    <td><?= h($deudas->fecha_mora->format('d/m/Y')) ?></td>
+<!--                    <td><?= h($deudas->modified->format('d/m/Y')) ?></td>-->
+                    
+<!--                    <td><?= h($deudas->dias_mora) ?></td>-->
                     <td class="actions"> 
                         <?= $this->Html->link(__('Ver'), ['controller' => 'Deudas', 'action' => 'view', $deudas->Id],['class' => 'btn btn-sm btn-info']) ?>
                         <?= $this->Html->link(__('Editar'), ['controller' => 'Deudas', 'action' => 'edit', $deudas->Id],['class' => 'btn btn-sm btn-warning']) ?>

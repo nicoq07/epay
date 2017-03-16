@@ -1,4 +1,5 @@
 <div class="container-fluid">
+     <?= $this->element('volverAtras') ?>
     <div class="page-header">
     <h3>Deudas</h3>
     </div>
@@ -18,9 +19,9 @@
                 
                 <th scope="col"><?= $this->Paginator->sort('numero_producto') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('capital_inicial') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('total') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('total',['label' => 'Capital actualizado']) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('fecha_mora') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('dias_mora') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('id_estado',['label' => 'Estado'] ) ?></th>
                 <th scope="col"><?= h('Gestiones') ?></th>
                 <th scope="col" class="actions"><?= __('Acciones en deuda') ?></th>
             </tr>
@@ -46,8 +47,8 @@
                                         'locale' => 'es_Ar'
                                         ])  ?>
                 </td>
-                <td><?= h($deuda->fecha_mora->format('d-m-Y')) ?></td>
-                <td><?= h($deuda->dias_mora) ?></td>
+                <td><?= h($deuda->fecha_mora->format('d/m/Y')) ?></td>
+                <td><?= $deuda->has('estados_deuda') ? h($deuda->estados_deuda->descripcion) : '' ?></td>
                 <td>
                   <?= $this->Html->link(__('Nueva'), ['controller' => 'DeudasGestiones', 'action' => 'add', $deuda->Id],['class' => 'btn btn-sm btn-primary']) ?>
                 </td>

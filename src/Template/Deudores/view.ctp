@@ -1,6 +1,7 @@
   <div class="row">
+      <?= $this->element('volverAtras') ?>
         <div class="page-header">
-            <h3><?= h($deudore->presentacionCompleta) ?></h3>
+            <h3><?= h($deudore->presentacionSimple) ?></h3>
         </div>
        <div class="page-header">
            <?= $this->Html->link(__('Agregar telefono'), ['controller' => 'DeudoresTelefonos', 'action' => 'add', $deudore->Id],['class' => 'btn btn-xl btn-success']) ?>
@@ -9,16 +10,32 @@
         <div class="table-responsive">
         <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
         <tr>
+            <th scope="row"><h3><?= __('DNI') ?></h3></th>
+            <td><h3><?= h($deudore->dni) ?></h3></td>
+        </tr>
+<!--
+        <tr>
+            <th scope="row"><?= __('Nombre y Apellido') ?></th>
+            <td><?= h($deudore->nombre) ?></td>
+        </tr>
+-->
+<!--
+        <tr>
             <th scope="row"><?= __('Calificacion') ?></th>
             <td><?= h($deudore->calificacion) ?></td>
         </tr>
+-->
         <tr>
             <th scope="row"><?= __('Direccion') ?></th>
             <td><?= h($deudore->direccion) ?></td>
         </tr>
         <tr>
-            <th scope="row"><?= __('Nombre y Apellido') ?></th>
-            <td><?= h($deudore->nombre) ?></td>
+            <th scope="row"><?= __('Provincia') ?></th>
+            <td><?= h($deudore->provincia) ?></td>
+        </tr>
+        <tr>
+            <th scope="row"><?= __('Localidad') ?></th>
+            <td><?= h($deudore->localidad) ?></td>
         </tr>
         <?php if(!empty($deudore->laboral)) { ?>
         <tr>
@@ -44,30 +61,23 @@
             <td><?= $this->Number->format($deudore->Id) ?></td>
         </tr>
 -->
-        <tr>
-            <th scope="row"><?= __('Dni') ?></th>
-            <td><?= $this->Number->format($deudore->dni,[
-                                  'locale' => 'es_Ar',
-                                  ]) ?></td>
-        </tr>
+        
 <!--
         <tr>
             <th scope="row"><?= __('Created') ?></th>
-            <td><?= h($deudore->created->format('d-m-Y')) ?></td>
+            <td><?= h($deudore->created->format('d/m/Y')) ?></td>
         </tr>
 -->
         <tr>
             <th scope="row"><?= __('Modificado') ?></th>
-            <td><?= h($deudore->modified->format('d-m-Y')) ?></td>
+            <td><?= h($deudore->modified->format('d/m/Y')) ?></td>
         </tr>
             <?php if (!empty($deudore->deudas)): ?>
             <?php foreach ($deudore->deudores_telefonos as $telefono): ?>
         <tr>
             <th scope="row"><?= __('Telefono ' . $telefono->descripcion) ?> <?= $this->Html->link(__('Editar'), ['controller' => 'DeudoresTelefonos', 'action' => 'edit', $telefono->Id],['class' => 'btn btn-sm']) ?></th>
             <td><?= $telefono->telefono; ?></td>
-            <td class="actions">
-
-            </td>
+            
 
         </tr>
             <?php endforeach; ?>
@@ -79,7 +89,7 @@
     </table>
 </div>
 <div class="well">
-    <h3> Deudas correspondientes a : </h3>
+    <h3> Deudas a cobrar : </h3>
 <div class="table-responsive">
           <table class="table table-striped table-hover"  cellpadding="0" cellspacing="0">
             <tr>
@@ -88,7 +98,7 @@
                 <th scope="col"><?= __('Capital inicial') ?></th>
                 <th scope="col"><?= __('Total actualizado') ?></th>
                 <th scope="col"><?= __('Fecha mora') ?></th>
-                <th scope="col"><?= __('Dias mora') ?></th>
+                <th scope="col"><?= __('Estado') ?></th>
                 <th scope="col" class="actions"><?= __('Acciones') ?></th>
             </tr>
                <?php if (!empty($deudore->deudas)): ?>
@@ -104,8 +114,8 @@
                                       'before' => '$',
                                       'locale' => 'es_Ar'
                                       ])?></td>
-                <td><?= h($deuda->fecha_mora->format('d-m-Y')) ?></td>
-                <td><?= h($deuda->dias_mora) ?></td>
+                <td><?= h($deuda->fecha_mora->format('d/m/Y')) ?></td>
+                <td><?= $deuda->has('estados_deuda') ? h($deuda->estados_deuda->descripcion) : '' ?></td>
                  <td class="actions">
                   <?= $this->Html->link(__('Nueva gestion'), ['controller' => 'DeudasGestiones', 'action' => 'add', $deuda->Id],['class' => 'btn btn-sm btn-primary']) ?>
                     <?= $this->Html->link(__('Ver'), ['controller' => 'Deudas','action' => 'view', $deuda->Id],['class' => 'btn btn-sm btn-success']) ?>

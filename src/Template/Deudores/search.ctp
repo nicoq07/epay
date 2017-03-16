@@ -1,4 +1,5 @@
 <div class="row">
+    <?= $this->element('volverAtras') ?>
     <div class="page-header">
         <h3>Deudor: </h3>
     </div>
@@ -31,8 +32,8 @@
                                       ]) ?></td>
                 <td><?= h($deudore->calificacion) ?></td>
                 <!-- <td><?= h($deudore->active) ?></td> -->
-                <td><?= h($deudore->created->format('d-m-Y')) ?></td>
-                <td><?= h($deudore->modified->format('d-m-Y')) ?></td>
+                <td><?= h($deudore->created->format('d/m/Y')) ?></td>
+                <td><?= h($deudore->modified->format('d/m/Y')) ?></td>
                 <td><?= h($deudore->direccion) ?></td>
 
 

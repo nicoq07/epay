@@ -15,7 +15,7 @@
 namespace App\Controller;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
-
+use Cake\View\Helper;
 
 //use PHPOffice\PHPExcel\PHPExcel_IOFactory;
 
@@ -89,6 +89,7 @@ class AppController extends Controller
     public function beforeFilter(Event $event)
     {
         $this->set('current_user', $this->Auth->user());
+        // $this->set('refer', $this->referer);
 
     }
     public function isAuthorized($user)

@@ -1,4 +1,5 @@
     <div class="row">
+        <?= $this->element('volverAtras') ?>
         <div class="page-header">
             <h3>Deudores</h3>
         </div>
@@ -26,12 +27,10 @@
 <!--                    <td><?= $this->Number->format($deudore->Id) ?></td>-->
 <!--                    <td><?= h($deudore->calificacion) ?></td>-->
 <!--                    <td><?= h($deudore->active) ?></td>-->
-<!--                    <td><?= h($deudore->created->format('d-m-Y')) ?></td>-->
+<!--                    <td><?= h($deudore->created->format('d/m/Y')) ?></td>-->
                     <td><?= h($deudore->nombre) ?></td>
-                    <td><?= $this->Number->format($deudore->dni,[
-                                          'locale' => 'es_Ar',
-                                          ]) ?></td>
-                    <td><?= h($deudore->modified->format('d-m-Y')) ?></td>
+                    <td><?= h($deudore->dni) ?></td>
+                    <td><?= h($deudore->modified->format('d/m/Y')) ?></td>
                     <td><?= h($deudore->direccion) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('Ver'), ['action' => 'view', $deudore->Id],['label' => 'Ver', 'class' => 'btn btn-sm btn-info']) ?>

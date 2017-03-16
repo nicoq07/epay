@@ -58,7 +58,7 @@ class DeudasController extends AppController
         $notAdmin = null;
         if ($this->Auth->user('role_id') !== 1) $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
         $this->paginate = [
-          'contain' => ['Deudores', 'Carteras', 'Users'],
+          'contain' => ['Deudores', 'Carteras', 'Users','EstadosDeudas'],
           'conditions' => [$notAdmin],
           'order' => ['id' => 'desc']
         ];
@@ -99,10 +99,10 @@ class DeudasController extends AppController
             }
             $this->Flash->error(__('The deuda could not be saved. Please, try again.'));
         }
-        $deudores = $this->Deudas->Deudores->find('list', ['limit' => 9999]);
-        $carteras = $this->Deudas->Carteras->find('list', ['limit' => 9999]);
-        $users = $this->Deudas->Users->find('list', ['limit' => 9999]);
-        $estados = $this->Deudas->EstadosDeudas->find('list', ['limit' => 9999]);
+        $deudores = $this->Deudas->Deudores->find('list');
+        $carteras = $this->Deudas->Carteras->find('list');
+        $users = $this->Deudas->Users->find('list');
+        $estados = $this->Deudas->EstadosDeudas->find('list');
         $this->set(compact('deuda', 'deudores', 'carteras', 'users','estados'));
         $this->set('_serialize', ['deuda']);
     }
@@ -169,7 +169,7 @@ class DeudasController extends AppController
     {
 
       $this->paginate = [
-            'contain' => ['Deudores', 'Carteras', 'Users']
+            'contain' => ['Deudores', 'Carteras', 'Users','EstadosDeudas']
         ];
         $this->set('deudas', $this->paginate($this->Deudas));
         $this->set('_serialize', ['deuda']);
@@ -191,8 +191,8 @@ class DeudasController extends AppController
       $notAdmin = null;
       if ($this->Auth->user('role_id') !== 1) $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
         $this->paginate = [
-          'contain' => ['Deudores', 'Carteras', 'Users'],
-          //'conditions' => [$notAdmin,'Deudas.active' => '1'],
+          'contain' => ['Deudores', 'Carteras', 'Users','EstadosDeudas'],
+          //'conditions' => [$notAdmin,'Deudas.active' =,''> '1'],
           'order' => ['id' => 'desc']
         ];
 

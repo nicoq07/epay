@@ -1,6 +1,7 @@
 
 
 <div class="row">
+    <?= $this->element('volverAtras') ?>
     <div class="col-md-6 col-md-offset-3">
     	<div class="page-header">
         <h2> Crear usuario </h2>

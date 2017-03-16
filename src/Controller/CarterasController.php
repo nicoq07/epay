@@ -262,241 +262,279 @@ class CarterasController extends AppController
             ///////////////////////////////////////////////////////////////////////////////
           }
 
-    public function subir($idCartera = null)
+    public function subir($idCartera = null, $confirmar = null)
     {
         // require_once(ROOT . DS . 'src' . DS . 'Classes' . DS . 'PHPExcel.php');
-        $connection = ConnectionManager::get('default');
-        $connection->begin();
-        $cartera = $this->Carteras->newEntity();
 
+
+        // $connection->begin();
+
+        $cartera = $this->Carteras->newEntity();
+        $cantDeudas = -1;
+        $cantCapIni = 0;
+        $cantTotal = 0;
         $id = null;
 
         $uploadData = '';
         if ($this->request->is('post')) {
-          if(!empty($this->request->data['file']['name'])){
-          $fileName = $this->request->data['file']['name'];
-          $uploadPath = 'uploads/files/';
-          $uploadFile = $uploadPath.$fileName;
-          if(move_uploaded_file($this->request->data['file']['tmp_name'],$uploadFile)){
-
-            $excelReader = \PHPExcel_IOFactory::createReaderForFile($uploadFile);
-            $excelObj = $excelReader->load($uploadFile);
-            $worksheet = $excelObj->getSheet(0);
-            $lastRow = $worksheet->getHighestRow();
-            $hoja = null;
-            for ($row = 2; $row <= $lastRow; $row++)
+            if(!empty($this->request->data['file']['name']))
             {
-              //deudor
-              //pregunto si existe el deudor con dni tanto
-              $resultDni = $connection->execute('SELECT dni FROM deudores WHERE dni = :dni', ['dni' => $worksheet->getCell('B'.$row)->getValue()]);
+                ConnectionManager::get('default')->begin();
+              $fileName = $this->request->data['file']['name'];
+              $uploadPath = 'uploads/files/';
+              $uploadFile = $uploadPath.$fileName;
+              if(move_uploaded_file($this->request->data['file']['tmp_name'],$uploadFile)){
 
-              //si el count es 0, osea no trajo nada lo voy a insertar
-              // si el count es 1, ese deudor ya existe no lo inserto pero cargo sus deudas.
-              if ($resultDni->count() == 0)
-              {
-
-                  $connection->insert('deudores', [
-                      'calificacion' => '',
-                      'nombre' => $worksheet->getCell('A'.$row)->getValue(),
-                      'dni' => $worksheet->getCell('B'.$row)->getValue(),
-                      'direccion' => $worksheet->getCell('C'.$row)->getValue(),
-                      'provincia' => $worksheet->getCell('D'.$row)->getValue(),
-                      'localidad' => $worksheet->getCell('E'.$row)->getValue(),
-                      'active' => true,
-                      'laboral' => $worksheet->getCell('F'.$row)->getValue(),
-                      'cantidad' => $worksheet->getCell('G'.$row)->getValue(),
-                      'categoria' => $worksheet->getCell('H'.$row)->getValue(),
-                      'modified' => new \DateTime('now'),
-                      'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
-
-                    //despues de insertarlo , voy a buscar su  Id preguntando por dni
-                  $deudor_id = $connection->execute('SELECT Id FROM deudores WHERE dni = :dni', ['dni' => $worksheet->getCell('B'.$row)->getValue()]);
-
-
-                  $id = $deudor_id->fetchAll()[0][0];
-
-                  //aca cargo en un array los telefonos del deudor, solo para poder recorrerlos
-                  $hoja[$row]['telefono1'] = $worksheet->getCell('P'.$row)->getValue();
-                  $hoja[$row]['telefono2'] = $worksheet->getCell('Q'.$row)->getValue();
-                  $hoja[$row]['telefono3'] = $worksheet->getCell('R'.$row)->getValue();
-                  $hoja[$row]['telefono4'] = $worksheet->getCell('S'.$row)->getValue();
-                  $hoja[$row]['telefono5'] = $worksheet->getCell('T'.$row)->getValue();
-                  $hoja[$row]['telefono6'] = $worksheet->getCell('U'.$row)->getValue();
-                  $hoja[$row]['telefono7'] = $worksheet->getCell('V'.$row)->getValue();
-                  //los reccoro, suponiendo que siempre van a tener como maximo 4 telefonos
-
-                  for ($i=1; $i <= 7; $i++) {
-
-                    //voy a recorrer el array que y preguntar si el campo de ese array no esta vacio para insertrlo en la tabla
-                      if (!empty($hoja[$row]['telefono'.$i]))
-                      {
-                        $connection->insert('deudores_telefonos', [
-                            'deudor_id' => $id,
-                            'telefono' => $hoja[$row]['telefono'.$i]]);
-                      }
-                  }
-
-                  //Busco el operador asignado, ellos me pasan el nombre completo y yo tengo
-                  //que traerme el id
-                  $user_id = null;
-                  if ($worksheet->getCell('O'.$row)->getValue() != null && !empty($worksheet->getCell('O'.$row)->getValue()))
-                  {
-                    $user_id = $connection->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
-                    $user_id = current($user_id->fetchAll('assoc'));
-                  }
-                  //cargo la deuda
-                  ///deuda
-                  $hoja[$row]['producto'] = $worksheet->getCell('I'.$row)->getValue();
-                  $hoja[$row]['numero_prodcuto'] = $worksheet->getCell('J'.$row)->getValue();
-                  $hoja[$row]['fecha_mora'] = $worksheet->getCell('K'.$row)->getFormattedValue();
-                  $hoja[$row]['dias_mora'] = $worksheet->getCell('L'.$row)->getValue();
-                  $hoja[$row]['capital_inicial'] = $worksheet->getCell('M'.$row)->getValue();
-                  $hoja[$row]['total'] = $worksheet->getCell('N'.$row)->getValue();
-                  //////// formateo la hora del excel en un timestamp para la BD
-                  $cell = $worksheet->getCell('K' . $row);
-                  $fecha_mora= $cell->getValue();
-                  if(\PHPExcel_Shared_Date::isDateTime($cell)) {
-                       $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($fecha_mora));
-                  }
-                  /////////////////////////////////////////////////////////////////////////////////////
-
-                $connection->insert('deudas', [
-                      'deudor_id' => $id,
-                      'cartera_id' => $idCartera,
-                      'usuario_id' => $user_id['id'],
-                      'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                      'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
-                      'fecha_mora' => $fecha_mora,
-                      'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                      'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                      'total' => $worksheet->getCell('N'.$row)->getValue(),
-                      'active' => true,
-                      'modified' => new \DateTime('now'),
-                      'created' => new \DateTime('now')],
-                      ['created' => 'datetime' , 'modified' => 'datetime']);
-
-
-
-              //hago insert en deudas gestiones informando la asigancion de la deuda
-              //la variable $desc tendrá la descripcion de la dueda asignada
-              if (!empty($user_id['id']) && $user_id['id'] > 0)
-              {
-                /////me traigo el id de la deuda recien creada
-                  $deuda_id = $connection->execute("SELECT Id FROM deudas WHERE deudor_id = :deudor_id AND
-                                                   cartera_id = :cartera_id AND
-                                                   producto = :producto AND
-                                                   dias_mora = :dias_mora AND
-                                                   numero_producto = :numero_producto AND
-                                                   capital_inicial = :capital_inicial AND
-                                                   total = :total" ,   ['deudor_id' => $id,
-                                                            'cartera_id' => $idCartera,
-                                                            'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                                                            'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
-                                                            'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                                                            'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                                                            'total' => $worksheet->getCell('N'.$row)->getValue()]);
-                 $deuda_id = current($deuda_id->fetchAll('assoc'));
-
-                  $desc = 'Caso asignado a '.$worksheet->getCell('O'.$row)->getValue() . ' el día :'. date('d-m-Y');
-                  $connection->insert('deudas_gestiones', [
-                      'deuda_id' => $deuda_id['Id'],
-                      'descripcion' => $desc,
-                      'modified' => new \DateTime('now'),
-                      'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
-                }
-
-
-              }
-              elseif ($resultDni->count() == 1) {
-                //////// formateo la hora del excel en un timestamp para la BD
-                $cell = $worksheet->getCell('K' . $row);
-                $fecha_mora= $cell->getValue();
-                if(\PHPExcel_Shared_Date::isDateTime($cell)) {
-                     $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($fecha_mora));
-                }
-                ///////////////////////////////////////////////
-                //Busco el operador asignado, ellos me pasan el nombre completo y yo tengo
-                //que traerme el id
-
-                $user_id = null;
-                if ($worksheet->getCell('O'.$row)->getValue() != null && !empty($worksheet->getCell('O'.$row)->getValue()))
+                $excelReader = \PHPExcel_IOFactory::createReaderForFile($uploadFile);
+                $excelObj = $excelReader->load($uploadFile);
+                $worksheet = $excelObj->getSheet(0);
+                $lastRow = $worksheet->getHighestRow();
+                $hoja = null;
+                for ($row = 2; $row <= $lastRow; $row++)
                 {
-                  $user_id = $connection->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
-                  $user_id = current($user_id->fetchAll('assoc'));
-                }
-                /////////////////////////////////////////////////////////////////////////////////////
-                $connection->insert('deudas', [
-                    'deudor_id' => $id,
-                    'cartera_id' => $idCartera,
-                    'usuario_id' => $user_id['id'],
-                    'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                    'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
-                    'fecha_mora' => $fecha_mora,
-                    'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                    'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                    'total' => $worksheet->getCell('N'.$row)->getValue(),
-                    'active' => true,
-                    'modified' => new \DateTime('now'),
-                    'created' => new \DateTime('now')],
-                    ['created' => 'datetime' , 'modified' => 'datetime']);
+                  $cantDeudas = $row;
+                  //deudor
+                  //pregunto si existe el deudor con dni tanto
+                  $resultDni =   ConnectionManager::get('default')->execute('SELECT dni FROM deudores WHERE dni = :dni', ['dni' => $worksheet->getCell('B'.$row)->getValue()]);
+
+                  //si el count es 0, osea no trajo nada lo voy a insertar
+                  // si el count es 1, ese deudor ya existe no lo inserto pero cargo sus deudas.
+                  if ($resultDni->count() == 0)
+                  {
+
+                        ConnectionManager::get('default')->insert('deudores', [
+                          'calificacion' => '',
+                          'nombre' => $worksheet->getCell('A'.$row)->getValue(),
+                          'dni' => $worksheet->getCell('B'.$row)->getValue(),
+                          'direccion' => $worksheet->getCell('C'.$row)->getValue(),
+                          'provincia' => $worksheet->getCell('D'.$row)->getValue(),
+                          'localidad' => $worksheet->getCell('E'.$row)->getValue(),
+                          'active' => true,
+                          'laboral' => $worksheet->getCell('F'.$row)->getValue(),
+                          'cantidad' => $worksheet->getCell('G'.$row)->getValue(),
+                          'categoria' => $worksheet->getCell('H'.$row)->getValue(),
+                          'modified' => new \DateTime('now'),
+                          'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
+
+                        //despues de insertarlo , voy a buscar su  Id preguntando por dni
+                      $deudor_id =   ConnectionManager::get('default')->execute('SELECT Id FROM deudores WHERE dni = :dni', ['dni' => $worksheet->getCell('B'.$row)->getValue()]);
+
+
+                      $id = $deudor_id->fetchAll()[0][0];
+
+                      //aca cargo en un array los telefonos del deudor, solo para poder recorrerlos
+                      $hoja[$row]['telefono1'] = $worksheet->getCell('P'.$row)->getValue();
+                      $hoja[$row]['telefono2'] = $worksheet->getCell('Q'.$row)->getValue();
+                      $hoja[$row]['telefono3'] = $worksheet->getCell('R'.$row)->getValue();
+                      $hoja[$row]['telefono4'] = $worksheet->getCell('S'.$row)->getValue();
+                      $hoja[$row]['telefono5'] = $worksheet->getCell('T'.$row)->getValue();
+                      $hoja[$row]['telefono6'] = $worksheet->getCell('U'.$row)->getValue();
+                      $hoja[$row]['telefono7'] = $worksheet->getCell('V'.$row)->getValue();
+                      //los reccoro, suponiendo que siempre van a tener como maximo 4 telefonos
+
+                      for ($i=1; $i <= 7; $i++) {
+
+                        //voy a recorrer el array que y preguntar si el campo de ese array no esta vacio para insertrlo en la tabla
+                          if (!empty($hoja[$row]['telefono'.$i]) || $hoja[$row]['telefono'.$i] != 0 )
+                          {
+                              ConnectionManager::get('default')->insert('deudores_telefonos', [
+                                'deudor_id' => $id,
+                                'telefono' => $hoja[$row]['telefono'.$i]]);
+                          }
+                      }
+
+                      //Busco el operador asignado, ellos me pasan el nombre completo y yo tengo
+                      //que traerme el id
+                      $user_id = null;
+                      if ($worksheet->getCell('O'.$row)->getValue() != null && !empty($worksheet->getCell('O'.$row)->getValue()))
+                      {
+                        $user_id =   ConnectionManager::get('default')->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
+                        $user_id = current($user_id->fetchAll('assoc'));
+                      }
+                      //cargo la deuda
+                      ///deuda
+                      $hoja[$row]['producto'] = $worksheet->getCell('I'.$row)->getValue();
+                      $hoja[$row]['numero_prodcuto'] = $worksheet->getCell('J'.$row)->getValue();
+                      $hoja[$row]['fecha_mora'] = $worksheet->getCell('K'.$row)->getFormattedValue();
+                      $hoja[$row]['dias_mora'] = $worksheet->getCell('L'.$row)->getValue();
+                      $hoja[$row]['capital_inicial'] = $worksheet->getCell('M'.$row)->getValue();
+                      $hoja[$row]['total'] = $worksheet->getCell('N'.$row)->getValue();
+                      //////// formateo la hora del excel en un timestamp para la BD
+                      $cell = $worksheet->getCell('K' . $row);
+                      $fecha_mora= $cell->getValue();
+                      if(\PHPExcel_Shared_Date::isDateTime($cell)) {
+                           $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($fecha_mora));
+                      }
+                      /////////////////////////////////////////////////////////////////////////////////////
+
+                      ConnectionManager::get('default')->insert('deudas', [
+                          'deudor_id' => $id,
+                          'cartera_id' => $idCartera,
+                          'usuario_id' => $user_id['id'],
+                          'producto' => $worksheet->getCell('I'.$row)->getValue(),
+                          'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                          'fecha_mora' => $fecha_mora,
+                          'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
+                          'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
+                          'total' => $worksheet->getCell('N'.$row)->getValue(),
+                          'active' => true,
+                          'modified' => new \DateTime('now'),
+                          'created' => new \DateTime('now')],
+                          ['created' => 'datetime' , 'modified' => 'datetime']);
+
+                          $cantCapIni += $worksheet->getCell('M'.$row)->getValue();
+                          $cantTotal += $worksheet->getCell('N'.$row)->getValue();
+
+                  //hago insert en deudas gestiones informando la asigancion de la deuda
+                  //la variable $desc tendrá la descripcion de la dueda asignada
+                  if (!empty($user_id['id']) && $user_id['id'] > 0)
+                  {
+                    /////me traigo el id de la deuda recien creada
+                      $deuda_id =   ConnectionManager::get('default')->execute("SELECT Id FROM deudas WHERE deudor_id = :deudor_id AND
+                                                       cartera_id = :cartera_id AND
+                                                       producto = :producto AND
+                                                       dias_mora = :dias_mora AND
+                                                       numero_producto = :numero_producto AND
+                                                       capital_inicial = :capital_inicial AND
+                                                       total = :total" ,   ['deudor_id' => $id,
+                                                                'cartera_id' => $idCartera,
+                                                                'producto' => $worksheet->getCell('I'.$row)->getValue(),
+                                                                'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                                                                'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
+                                                                'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
+                                                                'total' => $worksheet->getCell('N'.$row)->getValue()]);
+                     $deuda_id = current($deuda_id->fetchAll('assoc'));
+
+                      $desc = 'Caso asignado a '.$worksheet->getCell('O'.$row)->getValue() . ' el día :'. date('d-m-Y');
+                        ConnectionManager::get('default')->insert('deudas_gestiones', [
+                          'deuda_id' => $deuda_id['Id'],
+                          'descripcion' => $desc,
+                          'modified' => new \DateTime('now'),
+                          'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
+                    }
+
+
+                  }
+                  elseif ($resultDni->count() == 1) {
+                    //////// formateo la hora del excel en un timestamp para la BD
+                    $cell = $worksheet->getCell('K' . $row);
+                    $fecha_mora= $cell->getValue();
+                    if(\PHPExcel_Shared_Date::isDateTime($cell)) {
+                         $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($fecha_mora));
+                    }
+                    ///////////////////////////////////////////////
+                    //Busco el operador asignado, ellos me pasan el nombre completo y yo tengo
+                    //que traerme el id
+
+                    $user_id = null;
+                    if ($worksheet->getCell('O'.$row)->getValue() != null && !empty($worksheet->getCell('O'.$row)->getValue()))
+                    {
+                      $user_id =   ConnectionManager::get('default')->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
+                      $user_id = current($user_id->fetchAll('assoc'));
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////
+                      ConnectionManager::get('default')->insert('deudas', [
+                        'deudor_id' => $id,
+                        'cartera_id' => $idCartera,
+                        'usuario_id' => $user_id['id'],
+                        'producto' => $worksheet->getCell('I'.$row)->getValue(),
+                        'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                        'fecha_mora' => $fecha_mora,
+                        'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
+                        'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
+                        'total' => $worksheet->getCell('N'.$row)->getValue(),
+                        'active' => true,
+                        'modified' => new \DateTime('now'),
+                        'created' => new \DateTime('now')],
+                        ['created' => 'datetime' , 'modified' => 'datetime']);
+
+                        $cantCapIni += $worksheet->getCell('M'.$row)->getValue();
+                        $cantTotal += $worksheet->getCell('N'.$row)->getValue();
 
 
 
+                //hago insert en deudas gestiones informando la asigancion de la deuda
+                //la variable $desc tendrá la descripcion de la dueda asignada
+                // HAGO EL INSERT SI $user_id tiene dato
+                if (!empty($user_id['id']) && $user_id['id'] > 0)
+                {
+                  /////me traigo el id de la deuda recien creada
+                 $deuda_id =   ConnectionManager::get('default')->execute("SELECT Id FROM deudas WHERE deudor_id = :deudor_id AND
+                                             cartera_id = :cartera_id AND
+                                             producto = :producto AND
+                                             dias_mora = :dias_mora AND
+                                             numero_producto = :numero_producto AND
+                                             capital_inicial = :capital_inicial AND
+                                             total = :total" ,   ['deudor_id' => $id,
+                                                      'cartera_id' => $idCartera,
+                                                      'producto' => $worksheet->getCell('I'.$row)->getValue(),
+                                                      'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                                                      'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
+                                                      'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
+                                                      'total' => $worksheet->getCell('N'.$row)->getValue()]);
+                    $deuda_id = current($deuda_id->fetchAll('assoc'));
+                    $desc = 'Caso asignado a '.$worksheet->getCell('O'.$row)->getValue() . ' el día :'. date('d-m-Y');
+                      ConnectionManager::get('default')->insert('deudas_gestiones', [
+                        'deuda_id' => $deuda_id['Id'],
+                        'descripcion' => $desc,
+                        'modified' => new \DateTime('now'),
+                        'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
+                  }
 
 
-            //hago insert en deudas gestiones informando la asigancion de la deuda
-            //la variable $desc tendrá la descripcion de la dueda asignada
-            // HAGO EL INSERT SI $user_id tiene dato
-            if (!empty($user_id['id']) && $user_id['id'] > 0)
+
+                  }
+                  else
+                  {
+
+                    // si el count no devuelve ni 1 ni 0 algo esta mal
+                      //ConnectionManager::get('default')->rollback();
+                    $this->Flash->error("Tenemos un problema para cargar el archivo");
+
+                  }
+
+
+                } // fin FOR
+                  //   ConnectionManager::get('default')->commit();
+                  if ($cantDeudas > 0)
+                  {
+                    $cantDeudas = $cantDeudas - 1;
+                    $cantCapIni =  number_format($cantCapIni, 2, ',', ' ');
+                    $cantTotal =  number_format($cantTotal, 2, ',', ' ');
+                  }
+
+                $this->Flash->default("Confirma: Total deudas: $cantDeudas , Total Capital Inicial: $cantCapIni , Total Actualizado : $cantTotal ? ");
+                ConnectionManager::get('default')->commit();
+              } //fin if move_uploaded_file
+              else {
+                  //ConnectionManager::get('default')->rollback();
+               $this->Flash->error("Tenemos un problema para cargar el archivo");
+              }
+
+
+          }//fin requert-data
+          else { //si no trae data file , entra por aca
+            // debug($this->request->data['btnOk']);
+            if ($this->request->data['btnOk'] == 'Confirmar')
             {
-              /////me traigo el id de la deuda recien creada
-             $deuda_id = $connection->execute("SELECT Id FROM deudas WHERE deudor_id = :deudor_id AND
-                                         cartera_id = :cartera_id AND
-                                         producto = :producto AND
-                                         dias_mora = :dias_mora AND
-                                         numero_producto = :numero_producto AND
-                                         capital_inicial = :capital_inicial AND
-                                         total = :total" ,   ['deudor_id' => $id,
-                                                  'cartera_id' => $idCartera,
-                                                  'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                                                  'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
-                                                  'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                                                  'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                                                  'total' => $worksheet->getCell('N'.$row)->getValue()]);
-                $deuda_id = current($deuda_id->fetchAll('assoc'));
-                $desc = 'Caso asignado a '.$worksheet->getCell('O'.$row)->getValue() . ' el día :'. date('d-m-Y');
-                $connection->insert('deudas_gestiones', [
-                    'deuda_id' => $deuda_id['Id'],
-                    'descripcion' => $desc,
-                    'modified' => new \DateTime('now'),
-                    'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
-              }
+                  // debug(ConnectionManager::get('default'));
+                  ConnectionManager::get('default')->commit();
+                  $this->Flash->success("Cartera subida");
+            }
+            elseif ($this->request->data['btnOk'] == 'Rechazar') {
+                //ConnectionManager::get('default')->rollback();
+              $this->Flash->error("Okey, borramos todo!");
+            }
+            else {
+                //ConnectionManager::get('default')->rollback();
+              $this->Flash->error("Tenemos un problema para subir la cartera. Reintente!");
+            }
 
-
-
-              }
-              else
-              {
-
-                // si el count no devuelve ni 1 ni 0 algo esta mal
-                $connection->rollback();
-                $this->Flash->error("Tenemos un problema para cargar el archivo");
-
-              }
-
-
-            } // fin FOR
-              $connection->commit();
-            $this->Flash->success("Cartera guardada");
-
-          } //fin if move_uploaded_file
-          else {
-            $connection->rollback();
-           $this->Flash->error("Tenemos un problema para cargar el archivo");
           }
-
-
-        } //fin del request->post
+      }//fin del request->post
+      else {
+      //   $connection->rollback();
+      //  $this->Flash->error("Tenemos un problema para cargar el archivo");
       }
         $this->set(compact('cartera'));
 

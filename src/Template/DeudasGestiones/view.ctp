@@ -1,4 +1,5 @@
 <div class="well">
+    <?= $this->element('volverAtras') ?>
 <div class="deudasGestiones view large-9 medium-8 columns content">
     <h3><?= h($deudasGestione->deuda->producto .', numero : ' .$deudasGestione->deuda->numero_producto ) ?></h3>
     <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">

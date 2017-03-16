@@ -47,7 +47,6 @@ class DeudoresController extends AppController
         $deudore = $this->Deudores->get($id, [
             'contain' => ['Deudas','DeudoresTelefonos']
         ]);
-
         $this->set('deudore', $deudore);
         $this->set('_serialize', ['deudore']);
     }

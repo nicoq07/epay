@@ -1,4 +1,5 @@
 <div class="deudas form large-9 medium-8 columns content">
+    <?= $this->element('volverAtras') ?>
     <?= $this->Form->create($deuda) ?>
     <fieldset>
         <legend><?= __('Editar deuda') ?></legend>
@@ -10,7 +11,7 @@
 //            echo $this->Form->input('contactado');
             echo $this->Form->input('capital_inicial');
             echo $this->Form->input('numero_producto');
-            echo $this->Form->input('total');
+            echo $this->Form->input('total',['label' => 'Capital actualizado']);
             echo $this->Form->input('fecha_mora', ['empty' => true , 'label'=> 'Mora']);
             echo $this->Form->input('dias_mora', ['empty' => true]);
             echo $this->Form->input('active');

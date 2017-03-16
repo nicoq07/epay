@@ -31,7 +31,7 @@
                 <td><?= $this->Number->format($notificacione->receptor) ?></td>
                 <td><?= h($notificacione->leida) ?></td>
                 <td><?= h($notificacione->broadcast) ?></td>
-                <td><?= h($notificacione->created->format('d-m-Y')) ?></td>
+                <td><?= h($notificacione->created->format('d/m/Y')) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('View'), ['action' => 'view', $notificacione->id]) ?>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $notificacione->id]) ?>

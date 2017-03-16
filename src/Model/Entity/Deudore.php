@@ -34,7 +34,7 @@ class Deudore extends Entity
     ];
     protected function _getPresentacionCompleta()
     {
-        return $this->_properties['nombre'] .' DNI:' . $this->_properties['dni'];
+        return $this->_properties['nombre'] .' DNI: ' . $this->_properties['dni'];
     }
     protected function _getPresentacionSimple()
     {

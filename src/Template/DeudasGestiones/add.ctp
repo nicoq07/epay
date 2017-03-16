@@ -1,4 +1,5 @@
 <div class="deudasGestiones form large-9 medium-8 columns content">
+    <?= $this->element('volverAtras') ?>
     <?= $this->Form->create($deudasGestione) ?>
     <fieldset>
         <legend><?= __('Nueva gestión') ?></legend>

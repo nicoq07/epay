@@ -11,7 +11,7 @@
             echo $this->Form->input('capital_inicial');
             echo $this->Form->input('numero_producto');
             echo $this->Form->input('usuario_id', ['options' => $users, 'empty' => true]);
-            echo $this->Form->input('total');
+            echo $this->Form->input('total',['label' => 'Capital actualizado']);
             echo $this->Form->input('fecha_mora', ['empty' => true]);
             echo $this->Form->input('dias_mora', ['empty' => true]);
         ?>
