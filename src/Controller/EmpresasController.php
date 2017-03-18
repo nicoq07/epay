@@ -16,6 +16,22 @@ class EmpresasController extends AppController
      *
      * @return \Cake\Network\Response|null
      */
+     public function isAuthorized($user)
+     {
+         if(isset($user['role_id']) and $user['role_id'] == 3)
+         {
+             return false;
+         }
+         elseif (isset($user['role_id']) and $user['role_id'] == 2) {
+             if(in_array($this->request->action, ['edit','add','view,index']))
+             {
+                 return true;
+             }
+
+         }
+         return parent::isAuthorized($user);
+      }
+
     public function index()
     {
         $empresas = $this->paginate($this->Empresas);

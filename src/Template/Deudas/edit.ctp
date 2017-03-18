@@ -8,7 +8,7 @@
             echo $this->Form->input('cartera_id', ['options' => $carteras]);
             echo $this->Form->input('estado_id', ['options' => $estados_deuda]);
             echo $this->Form->input('producto');
-//            echo $this->Form->input('contactado');
+            echo $this->Form->input('codpagar',['label' => 'Codigo de Pago']);
             echo $this->Form->input('capital_inicial');
             echo $this->Form->input('numero_producto');
             echo $this->Form->input('total',['label' => 'Capital actualizado']);

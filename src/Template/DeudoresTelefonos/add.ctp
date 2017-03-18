@@ -5,7 +5,16 @@
         <legend><?= __('Agregar nuevo telefono') ?></legend>
         <?php
 //            echo $this->Form->input('deudor_id', ['options' => $deudores]);
-            echo $this->Form->input('descripcion');
+            echo $this->Form->select(
+                'descripcion',
+                ['Principal' => 'Principal',
+                'Laboral' =>'Laboral',
+                'Familiar' =>'Familiar',
+                'Vecino' =>'Vecino',
+                'Celular principal' =>'Celular principal' ,
+                'Celular otro' =>'Celular otro'],
+                ['empty' =>  false]
+            );
             echo $this->Form->input('telefono');
         ?>
     </fieldset>

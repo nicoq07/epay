@@ -26,6 +26,20 @@ class DeudoresTelefonosController extends AppController
         $this->set(compact('deudoresTelefonos'));
         $this->set('_serialize', ['deudoresTelefonos']);
     }
+    public function isAuthorized($user)
+    {
+        if(isset($user['role_id']) and $user['role_id'] == 2)
+        {
+          return true;
+        }
+        elseif (isset($user['role_id']) and $user['role_id'] == 3) {
+          if(in_array($this->request->action, ['edit','add','view']))
+          {
+              return true;
+          }
+        }
+        return parent::isAuthorized($user);
+    }
 
     /**
      * View method

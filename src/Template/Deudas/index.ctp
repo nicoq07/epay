@@ -1,5 +1,5 @@
-<div class="container-fluid">
-     <?= $this->element('volverAtras') ?>
+ <?= $this->element('volverAtras') ?>
+<div class="container-fluid well">
     <div class="page-header">
     <h3>Deudas</h3>
     </div>

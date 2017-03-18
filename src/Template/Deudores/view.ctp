@@ -5,14 +5,28 @@
         </div>
        <div class="page-header">
            <?= $this->Html->link(__('Agregar telefono'), ['controller' => 'DeudoresTelefonos', 'action' => 'add', $deudore->Id],['class' => 'btn btn-xl btn-success']) ?>
-           <?= $this->Html->link(__('Editar deudor'), ['action' => 'edit', $deudore->Id],['class' => 'btn btn-xl btn-warning']) ?>
+           <?php if ($current_user['role_id'] === 1 || $current_user['role_id'] === 2 ) 
+            
+           $this->Html->link(__('Editar deudor'), ['action' => 'edit', $deudore->Id],['class' => 'btn btn-xl btn-warning']) 
+             ?>
         </div>
-        <div class="table-responsive">
+<div class="well table-responsive">
         <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
         <tr>
             <th scope="row"><h3><?= __('DNI') ?></h3></th>
             <td><h3><?= h($deudore->dni) ?></h3></td>
         </tr>
+            <?php if (!empty($deudore->deudas)): ?>
+            <?php foreach ($deudore->deudores_telefonos as $telefono): ?>
+        <tr>
+            <th scope="row"><h4><?= __('Telefono ' . $telefono->descripcion) ?>  <?= $this->Html->link(__('Editar'), ['controller' => 'DeudoresTelefonos', 'action' => 'edit', $telefono->Id],['class' => 'btn btn-sm']) ?></h4>
+            </th>
+            <td><h4><?= $telefono->telefono; ?></h4></td>
+            
+
+        </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
 <!--
         <tr>
             <th scope="row"><?= __('Nombre y Apellido') ?></th>
@@ -72,20 +86,13 @@
             <th scope="row"><?= __('Modificado') ?></th>
             <td><?= h($deudore->modified->format('d/m/Y')) ?></td>
         </tr>
-            <?php if (!empty($deudore->deudas)): ?>
-            <?php foreach ($deudore->deudores_telefonos as $telefono): ?>
-        <tr>
-            <th scope="row"><?= __('Telefono ' . $telefono->descripcion) ?> <?= $this->Html->link(__('Editar'), ['controller' => 'DeudoresTelefonos', 'action' => 'edit', $telefono->Id],['class' => 'btn btn-sm']) ?></th>
-            <td><?= $telefono->telefono; ?></td>
             
-
-        </tr>
-            <?php endforeach; ?>
-        <?php endif; ?>
+<!--
         <tr>
             <th scope="row"><?= __('Active') ?></th>
             <td><?= $deudore->active ? __('Sí') : __('No'); ?></td>
         </tr>
+-->
     </table>
 </div>
 <div class="well">
@@ -119,7 +126,9 @@
                  <td class="actions">
                   <?= $this->Html->link(__('Nueva gestion'), ['controller' => 'DeudasGestiones', 'action' => 'add', $deuda->Id],['class' => 'btn btn-sm btn-primary']) ?>
                     <?= $this->Html->link(__('Ver'), ['controller' => 'Deudas','action' => 'view', $deuda->Id],['class' => 'btn btn-sm btn-success']) ?>
+                     <?php if ($current_user['role_id'] === 1 || $current_user['role_id'] === 2 ) {?>
                     <?= $this->Html->link(__('Editar'), ['controller' => 'Deudas','action' => 'edit', $deuda->Id],['class' => 'btn btn-sm btn-warning']) ?>
+                     <?php } ?>
                 </td>
             </tr>
 

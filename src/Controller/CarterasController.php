@@ -14,7 +14,7 @@ use Cake\I18n\Time;
  */
 class CarterasController extends AppController
 {
- public $archivo;
+ // public $archivo;
     /**
      * Index method
      *
@@ -28,6 +28,18 @@ class CarterasController extends AppController
         $carteras = $this->paginate($this->Carteras);
         $this->set(compact('carteras'));
         $this->set('_serialize', ['carteras']);
+    }
+
+    public function isAuthorized($user)
+    {
+        if(isset($user['role_id']) and $user['role_id'] == 2)
+        {
+            if(in_array($this->request->action, ['index','view','edit','search']))
+            {
+                return true;
+            }
+        }
+        return parent::isAuthorized($user);
     }
 
     /**

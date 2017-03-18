@@ -13,9 +13,9 @@ class DeudasGestionesController extends AppController
 {
   public function isAuthorized($user)
   {
-      if(isset($user['role_id']) and $user['role_id'] == 2)
+      if(isset($user['role_id']) and ($user['role_id'] == 2 || $user['role_id'] == 3) )
       {
-          if(in_array($this->request->action, ['index','view','edit','add']))
+          if(in_array($this->request->action, ['index','view','add']))
           {
               return true;
           }
@@ -72,6 +72,8 @@ class DeudasGestionesController extends AppController
      */
     public function add($deuda_id = null)
     {
+        $cabecera = 'Operador '. $this->current_user['nombre']." ".$this->current_user['apellido'] . 'ha escrito: ' ;
+        
       if (empty($deuda_id))
         {
           return false;
@@ -83,8 +85,10 @@ class DeudasGestionesController extends AppController
 
         if ($this->request->is('post')) {
 
-            $deudasGestione = $this->DeudasGestiones->patchEntity($deudasGestione, $this->request->data);
 
+            echo $cabecera;
+            $deudasGestione = $this->DeudasGestiones->patchEntity($deudasGestione, $this->request->data);
+            $deudasGestione['descripcion'] = $cabecera.$deudasGestione['descripcion'];
             $connection = ConnectionManager::get('default');
 
             if ($this->request->data['estado_id'] == 7)

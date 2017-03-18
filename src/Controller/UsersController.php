@@ -25,14 +25,16 @@ class UsersController extends AppController
     }
     public function isAuthorized($user)
     {
-        if(isset($user['role_id']) and $user['role_id'] == 2)
-        {
-            if(in_array($this->request->action, ['home', 'view', 'logout']))
-            {
-                return true;
-            }
-        }
-        return parent::isAuthorized($user);
+      if(isset($user['role_id']) && ($user['role_id'] == 3  ||  $user['role_id'] == 2))
+      {
+          if(in_array($this->request->action, ['view','index','logout','home']))
+          {
+              return true;
+          }
+      }
+
+      
+      return parent::isAuthorized($user);
     }
 
     public function login()
@@ -83,7 +85,7 @@ class UsersController extends AppController
     }
     public function home()
     {
-        
+
     }
     /**
      * Index method

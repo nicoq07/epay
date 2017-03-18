@@ -1,22 +1,56 @@
 <div class="container-fluid">
     <?= $this->element('volverAtras') ?>
-<div class="well">
-    <div class="row">
-        <div class="col-lg-10"> <h3><?= h('Deuda de: ') ; echo $this->Html->link($deuda->deudore->presentacionSimple , ['controller' => 'Deudores', 'action' => 'view', $deuda->deudore->Id]) ?></h3>
-        </div>
+<div>
+<div class="row container-fluid">
+    <div class="col-lg-3 col-lg-offset-10" >
+        <?= $this->Html->link(__('Nueva gestión'), ['controller' => 'DeudasGestiones' ,'action' => 'add', $deuda->Id],['class' => 'btn btn-xl btn-success']) ?>
+    </div>
+</div>
+<div>
+<!--
+    <div class="row well">
+        
          <div class="col-lg-2">
                <?= $this->Html->link(__('Editar'), ['controller' => 'Deudas' ,'action' => 'edit', $deuda->Id],['class' => 'btn btn-xl btn-warning']) ?>
           </div>
     </div>
+-->
+    <div class="row">
+        <div class="col-lg-12 resaltar-div azul-blanco" > <?= h('Deuda de: ') ; echo $this->Html->link($deuda->deudore->presentacionSimple , ['controller' => 'Deudores', 'action' => 'view', $deuda->deudore->Id]) ?>
+        </div>
+        <div class="col-lg-6 resaltar-div beige-negro" > <?=  h('Capital Inicial: ' . $this->Number->format($deuda->capital_inicial,[
+                                  'before' => '$',
+                                  'locale' => 'es_Ar'
+                                  ])) ?>
+        </div>
+      <div class="col-lg-6 resaltar-div naranjita-negro " > <?=  h('Capital Actualizado: ' . $this->Number->format($deuda->total,[
+                                  'before' => '$',
+                                  'locale' => 'es_Ar'
+                                  ])) ?> 
+        </div>
+      <div class="col-lg-6 resaltar-div rojo-negro" > Estado: <span><?= $deuda->has('estados_deuda') ? h($deuda->estados_deuda->descripcion) : '' ?></span>  </div>
+      <div class="col-lg-6 resaltar-div gris-grisblanco " > <?= h($deuda->producto) ?> </div>
+      <div class="col-lg-6 resaltar-div verde-negro" > <?=  h('Fecha de mora: ' . $deuda->fecha_mora->format('d/m/Y')) ?> </div>
+        
+        
+        <div class="col-lg-6 resaltar-div celeste-negro" >
+            <div>Propietario: <span><?= $deuda->has('user') ? $this->Html->link($deuda->user->presentacion, ['controller' => 'Users', 'action' => 'view', $deuda->user->id]) : '' ?></span>  </div>
+      </div>
+    </div>
+    <div class="well">
     <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
+<!--
         <tr>
             <th scope="row"><?= __('Deudor') ?></th>
             <td><?= $deuda->has('deudore') ? $this->Html->link($deuda->deudore->presentacionSimple , ['controller' => 'Deudores', 'action' => 'view', $deuda->deudore->Id]) : '' ?></td>
         </tr>
+-->
+<!--
         <tr>
             <th scope="row"><?= __('Cartera') ?></th>
             <td><?= $deuda->has('cartera') ? $this->Html->link($deuda->cartera->descripcion, ['controller' => 'Carteras', 'action' => 'view', $deuda->cartera->Id]) : '' ?></td>
         </tr>
+-->
         <tr>
             <th scope="row"><?= __('Producto') ?></th>
             <td><?= h($deuda->producto) ?></td>
@@ -25,6 +59,7 @@
             <th scope="row"><?= __('Número producto') ?></th>
             <td><?= h($deuda->numero_producto) ?></td>
         </tr>
+<!--
         <tr>
             <th scope="row"><?= __('Estado') ?></th>
             
@@ -35,20 +70,26 @@
             
 
         </tr>
+-->
+<!--
         <tr>
             <th scope="row"><?= __('Fecha Mora') ?></th>
             <td><?= h($deuda->fecha_mora->format('d/m/Y')) ?></td>
         </tr>
+-->
         <tr>
                 <th scope="row"><?= __('Hubo acuerdo?') ?></th>
                 <td><?= $deuda->acuerdo ? __('Si') : __('No'); ?></td>
             </tr>
+<!--
         <tr>
             <th scope="row"><?= __('Operador asignado') ?></th>
             <td>
                 <?= $deuda->has('user') ? $this->Html->link($deuda->user->presentacion, ['controller' => 'Users', 'action' => 'view', $deuda->user->id]) : '' ?>
             </td>
         </tr>
+-->
+<!--
         <tr>
             <th scope="row"><?= __('Capital Inicial') ?></th>
             <td><?= $this->Number->format($deuda->capital_inicial,[
@@ -64,6 +105,11 @@
                                   'before' => '$',
                                   'locale' => 'es_Ar'
                                   ]) ?>
+        </tr>
+-->
+        <tr>
+            <th scope="row"><?= __('Codigo de pago') ?></th>
+            <td><?= h($deuda->codpagar) ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Creado') ?></th>
@@ -82,6 +128,7 @@
 
         </tr>
     </table>
+    </div>
 
 </div>
 <div class="well">

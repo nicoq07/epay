@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row well">
     <?= $this->element('volverAtras') ?>
     <div class="page-header">
     <h3>Gestiones</h3>

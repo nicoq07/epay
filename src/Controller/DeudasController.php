@@ -32,13 +32,17 @@ class DeudasController extends AppController
 
   public function isAuthorized($user)
   {
-      if(isset($user['role_id']) and $user['role_id'] == 2)
+      if(isset($user['role_id']) &&  $user['role_id'] == 3)
       {
-          if(in_array($this->request->action, ['index','view','edit','search']))
+          if(in_array($this->request->action, ['index','view','search']))
           {
               return true;
           }
       }
+      elseif (isset($user['role_id']) and $user['role_id'] == 2) {
+         return true;
+      }
+
       return parent::isAuthorized($user);
   }
     /**
@@ -55,6 +59,7 @@ class DeudasController extends AppController
 
         $this->set(compact('deudas'));
         $this->set('_serialize', ['deudas']);*/
+
         $notAdmin = null;
         if ($this->Auth->user('role_id') !== 1) $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
         $this->paginate = [
@@ -167,21 +172,37 @@ class DeudasController extends AppController
 
     public function search()
     {
-
+      $busqueda = "";
       $this->paginate = [
             'contain' => ['Deudores', 'Carteras', 'Users','EstadosDeudas']
         ];
-        $this->set('deudas', $this->paginate($this->Deudas));
-        $this->set('_serialize', ['deuda']);
 
-      if ($this->request->is(['post']))
+
+      if ($this->request->is(['post']) && !empty($this->request->data['busqueda']))
       {
-        $deudore = $this->request->data['busqueda'];
-        $deudas = $this->Deudas->find('pordni',
-                    ['deudores' => $deudore]);
+        $busqueda = $this->request->data['busqueda'];
+        $search = $this->request->data['busqueda'];
+
+
+           $conditions = ['conditions' => [
+            		            'or' => [
+            		                'Deudores.nombre LIKE' => "%$search%",
+            		                'Deudores.dni LIKE' => "%$search%",
+            		                'Deudas.numero_producto LIKE' => "%$search%"
+            		            ]
+            		        ]
+            		    ];
+
+         $this->set('deudas', $this->paginate($this->Deudas->find('all', $conditions)));
+
+      }
+      else{
+         	$this->set('deudas', $this->paginate($this->Deudas));
       }
 
-      $this->set(['deudas' => $deudas, 'deudores' => $deudore]);
+
+      $this->set(compact('deudas' ,'busqueda'));
+
 
     }
 
