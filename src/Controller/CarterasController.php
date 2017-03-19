@@ -287,8 +287,6 @@ class CarterasController extends AppController
         $deudasNuevas = 0;
         $deudasActualizadas = 0;
         $id = null;
-
-        $uploadData = '';
         if ($this->request->is('post')) {
               if(!empty($this->request->data['file']['name']))
               {
@@ -549,14 +547,19 @@ class CarterasController extends AppController
                     if (isset($this->request->data['btnOk']))
                     {
                        if ($this->request->data['btnOk'] == 'Confirmar')
-                        {     rename($uploadFile, $uploadFile." ".date('d/m/Y'));
+                        {
+                              if (file_exists($uploadFile))
+                              {
+                                $nombreNuevo = $uploadFile ." ".date('d/m/Y');
+                                // rename($uploadFile, $nombreNuevo);
+                              }
                               $connection->commit();
                               $this->Flash->success("Cartera subida");
                         }
 
                     }
 
-                  $this->Flash->default("Confirma: Total deudas: $cantDeudas , Total Capital Inicial: $cantCapIni , Total Actualizado : $cantTotal , Deudas nuevas : $deudasNuevas, Deudores nuevos : $deudoresNuevos ? ");
+                  $this->Flash->default("Confirma: Total deudas: $cantDeudas , Total Capital Inicial: $cantCapIni , Total Actualizado : $cantTotal  Deudores nuevos : $deudoresNuevos ? ");
 
               }
 

@@ -11,10 +11,6 @@
                 <div class="col-2">
                   <?= $this->Form->submit('Confirmar', ['name'=>'btnOk' ,'class' => 'btn  btn-success btn-sm']); ?>
                 </div>
-                <div class="col-2">
-                  <?= $this->Form->submit('Rechazar', ['name'=>'btnOk' ,'class' => 'btn btn-danger btn-sm']); ?>
-                </div>
-                
             </div>
             
             
