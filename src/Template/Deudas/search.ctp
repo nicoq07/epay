@@ -24,7 +24,7 @@
             <?php if(!empty($deudas)): ?>
             <?php foreach ($deudas as $deuda): ?>
             <tr>
-                <td><?=  $deuda->has('deudor_id') ? h($deuda->deudore->presentacionSimple) : '' ?> </td>
+                <td><?= $deuda->has('deudore') ? $this->Html->link($deuda->deudore->presentacionSimple, ['controller' => 'Deudores', 'action' => 'view', $deuda->deudore->Id]) : '' ?></td>
                 <td><?= h($deuda->producto) ?></td>
                 <td><?= h($deuda->numero_producto) ?></td>
                 <td><?= $this->Number->format($deuda->capital_inicial,[

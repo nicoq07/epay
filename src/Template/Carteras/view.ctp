@@ -64,7 +64,9 @@
                                   'before' => '$',
                                   'locale' => 'es_Ar'
                                   ]) ?></td>
-                    <td><?= h($deudas->fecha_mora->format('d/m/Y')) ?></td>
+                    <?php if(!empty($deudas->fecha_mora)) {?>
+                    <td><?= h($deudas->fecha_mora->format('d/m/Y'))?></td>
+                    <?php } ?>
 <!--                    <td><?= h($deudas->modified->format('d/m/Y')) ?></td>-->
                     
 <!--                    <td><?= h($deudas->dias_mora) ?></td>-->

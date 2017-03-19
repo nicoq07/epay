@@ -28,14 +28,17 @@
                                   'locale' => 'es_Ar'
                                   ])) ?> 
         </div>
-      <div class="col-lg-6 resaltar-div rojo-negro" > Estado: <span><?= $deuda->has('estados_deuda') ? h($deuda->estados_deuda->descripcion) : '' ?></span>  </div>
-      <div class="col-lg-6 resaltar-div gris-grisblanco " > <?= h($deuda->producto) ?> </div>
+      <div class="col-lg-6 resaltar-div rojo-negro" > Estado: <span><?= $deuda->has('estados_deuda') ? h($deuda->estados_deuda->descripcion) : 'Sin estado' ?></span>  </div>
+        <?php if ($deuda->producto) :?>
+        <div class="col-lg-6 resaltar-div gris-grisblanco " > <?= h($deuda->producto) ?> </div>
+        <?php endif; ?>
       <div class="col-lg-6 resaltar-div verde-negro" > <?=  h('Fecha de mora: ' . $deuda->fecha_mora->format('d/m/Y')) ?> </div>
         
-        
+       
         <div class="col-lg-6 resaltar-div celeste-negro" >
-            <div>Propietario: <span><?= $deuda->has('user') ? $this->Html->link($deuda->user->presentacion, ['controller' => 'Users', 'action' => 'view', $deuda->user->id]) : '' ?></span>  </div>
-      </div>
+            <div>Propietario: <span><?= $deuda->has('user') ? $this->Html->link($deuda->user->presentacion, ['controller' => 'Users', 'action' => 'view', $deuda->user->id]) : 'Sin asignar' ?></span>  </div>
+        </div>
+
     </div>
     <div class="well">
     <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">

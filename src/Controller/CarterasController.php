@@ -317,27 +317,35 @@ class CarterasController extends AppController
                     //si el count es 0, osea no trajo nada lo voy a insertar
                     // si el count es 1, ese deudor ya existe no lo inserto pero cargo sus deudas.
                     //sumo uno a DEudores nuevos
+                    $nombre = !empty($worksheet->getCell('A'.$row)->getValue()) ? $worksheet->getCell('A'.$row)->getValue() : 0;
+                    $dni = !empty($worksheet->getCell('B'.$row)->getValue()) ? $worksheet->getCell('B'.$row)->getValue() : 0;
+                    $direccion = !empty($worksheet->getCell('C'.$row)->getValue()) ? $worksheet->getCell('C'.$row)->getValue() : 0;
+                    $provincia = !empty($worksheet->getCell('D'.$row)->getValue()) ? $worksheet->getCell('D'.$row)->getValue() : 0;
+                    $localidad = !empty($worksheet->getCell('E'.$row)->getValue()) ? $worksheet->getCell('E'.$row)->getValue() : 0;
+                    $laboral = !empty($worksheet->getCell('F'.$row)->getValue()) ? $worksheet->getCell('F'.$row)->getValue() : 0;
+                    $cantidad = !empty($worksheet->getCell('G'.$row)->getValue()) ? $worksheet->getCell('G'.$row)->getValue() : 0;
+                    $categoria = !empty($worksheet->getCell('H'.$row)->getValue()) ? $worksheet->getCell('H'.$row)->getValue() : 0;
                     if ($resultDni->count() == 0)
                     {
 
                           $connection->insert('deudores', [
                             'calificacion' => '',
-                            'nombre' => $worksheet->getCell('A'.$row)->getValue(),
-                            'dni' => $worksheet->getCell('B'.$row)->getValue(),
-                            'direccion' => $worksheet->getCell('C'.$row)->getValue(),
-                            'provincia' => $worksheet->getCell('D'.$row)->getValue(),
-                            'localidad' => $worksheet->getCell('E'.$row)->getValue(),
+                            'nombre' => $nombre,
+                            'dni' => $dni,
+                            'direccion' => $direccion,
+                            'provincia' => $provincia,
+                            'localidad' => $localidad,
                             'active' => true,
-                            'laboral' => $worksheet->getCell('F'.$row)->getValue(),
-                            'cantidad' => $worksheet->getCell('G'.$row)->getValue(),
-                            'categoria' => $worksheet->getCell('H'.$row)->getValue(),
+                            'laboral' => $laboral,
+                            'cantidad' => $cantidad,
+                            'categoria' => $categoria,
                             'modified' => new \DateTime('now'),
                             'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
 
 
 
                           //despues de insertarlo , voy a buscar su  Id preguntando por dni
-                        $deudor_id =   $connection->execute('SELECT Id FROM deudores WHERE dni = :dni', ['dni' => $worksheet->getCell('B'.$row)->getValue()]);
+                        $deudor_id =   $connection->execute('SELECT Id FROM deudores WHERE dni = :dni', ['dni' => $dni]);
 
 
                         $id = $deudor_id->fetchAll()[0][0];
@@ -376,37 +384,37 @@ class CarterasController extends AppController
                         }
                         //cargo la deuda
                         ///deuda
-                        $hoja[$row]['producto'] = $worksheet->getCell('I'.$row)->getValue();
-                        $hoja[$row]['numero_prodcuto'] = $worksheet->getCell('J'.$row)->getValue();
-                        $hoja[$row]['fecha_mora'] = $worksheet->getCell('K'.$row)->getFormattedValue();
-                        $hoja[$row]['dias_mora'] = $worksheet->getCell('L'.$row)->getValue();
-                        $hoja[$row]['capital_inicial'] = $worksheet->getCell('M'.$row)->getValue();
-                        $hoja[$row]['total'] = $worksheet->getCell('N'.$row)->getValue();
+
                         //////// formateo la hora del excel en un timestamp para la BD
                         $cell = $worksheet->getCell('K' . $row);
                         $fecha_mora= $cell->getValue();
                         if(\PHPExcel_Shared_Date::isDateTime($cell)) {
                              $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($fecha_mora));
                         }
-                        /////////////////////////////////////////////////////////////////////////////////////
+                        $producto =  !empty($worksheet->getCell('I'.$row)->getValue()) ? $worksheet->getCell('I'.$row)->getValue() : '';
+                        $numero_producto= !empty($worksheet->getCell('J'.$row)->getValue()) ? $worksheet->getCell('J'.$row)->getValue() : '';
+                        $dias_mora = !empty($worksheet->getCell('L'.$row)->getValue()) ? $worksheet->getCell('L'.$row)->getValue() : '';
+                        $capital_inicial = !empty($worksheet->getCell('M'.$row)->getValue()) ? $worksheet->getCell('M'.$row)->getValue() : 0;
+                        $total = !empty($worksheet->getCell('N'.$row)->getValue()) ? $worksheet->getCell('N'.$row)->getValue() : 0;
+
 
                         $connection->insert('deudas', [
                             'deudor_id' => $id,
                             'cartera_id' => $idCartera,
                             'usuario_id' => $user_id['id'],
-                            'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                            'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                            'producto' => $producto,
+                            'numero_producto' => $numero_producto,
                             'fecha_mora' => $fecha_mora,
-                            'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                            'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                            'total' => $worksheet->getCell('N'.$row)->getValue(),
+                            'dias_mora' =>  $dias_mora,
+                            'capital_inicial' => $capital_inicial,
+                            'total' => $total,
                             'active' => true,
                             'modified' => new \DateTime('now'),
                             'created' => new \DateTime('now')],
                             ['created' => 'datetime' , 'modified' => 'datetime']);
                             $deudasNuevas++;
-                            $cantCapIni += $worksheet->getCell('M'.$row)->getValue();
-                            $cantTotal += $worksheet->getCell('N'.$row)->getValue();
+                            $cantCapIni += $capital_inicial;
+                            $cantTotal += $total;
 
                     //hago insert en deudas gestiones informando la asigancion de la deuda
                     //la variable $desc tendrá la descripcion de la dueda asignada
@@ -421,14 +429,15 @@ class CarterasController extends AppController
                                                              capital_inicial = :capital_inicial AND
                                                              total = :total" ,   ['deudor_id' => $id,
                                                                       'cartera_id' => $idCartera,
-                                                                      'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                                                                      'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
-                                                                      'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                                                                      'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                                                                      'total' => $worksheet->getCell('N'.$row)->getValue()]);
+                                                                      'producto' => $producto,
+                                                                      'numero_producto' => $numero_producto,
+                                                                      'dias_mora' =>  $dias_mora,
+                                                                      'capital_inicial' => $capital_inicial,
+                                                                      'total' => $total]);
                            $deuda_id = current($deuda_id->fetchAll('assoc'));
 
-                            $desc = 'Caso asignado a '.$worksheet->getCell('O'.$row)->getValue() . ' el día :'. date('d-m-Y');
+                           $usuario_asignado =  !empty($worksheet->getCell('O'.$row)->getValue()) ? $worksheet->getCell('O'.$row)->getValue() : '';
+                            $desc = 'Caso asignado a '.$usuario_asignado. ' el día :'. date('d-m-Y');
                               $connection->insert('deudas_gestiones', [
                                 'deuda_id' => $deuda_id['Id'],
                                 'descripcion' => $desc,
@@ -462,24 +471,30 @@ class CarterasController extends AppController
                         $user_id = current($user_id->fetchAll('assoc'));
                       }
                       /////////////////////////////////////////////////////////////////////////////////////
-                        $connection->insert('deudas', [
+                      $producto =  !empty($worksheet->getCell('I'.$row)->getValue()) ? $worksheet->getCell('I'.$row)->getValue() : '';
+                      $numero_producto= !empty($worksheet->getCell('J'.$row)->getValue()) ? $worksheet->getCell('J'.$row)->getValue() : '';
+                      $dias_mora = !empty($worksheet->getCell('L'.$row)->getValue()) ? $worksheet->getCell('L'.$row)->getValue() : '';
+                      $capital_inicial = !empty($worksheet->getCell('M'.$row)->getValue()) ? $worksheet->getCell('M'.$row)->getValue() : 0;
+                      $total = !empty($worksheet->getCell('N'.$row)->getValue()) ? $worksheet->getCell('N'.$row)->getValue() : 0;
+
+
+                      $connection->insert('deudas', [
                           'deudor_id' => $id,
                           'cartera_id' => $idCartera,
                           'usuario_id' => $user_id['id'],
-                          'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                          'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
+                          'producto' => $producto,
+                          'numero_producto' => $numero_producto,
                           'fecha_mora' => $fecha_mora,
-                          'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                          'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                          'total' => $worksheet->getCell('N'.$row)->getValue(),
+                          'dias_mora' =>  $dias_mora,
+                          'capital_inicial' => $capital_inicial,
+                          'total' => $total,
                           'active' => true,
                           'modified' => new \DateTime('now'),
                           'created' => new \DateTime('now')],
                           ['created' => 'datetime' , 'modified' => 'datetime']);
-
-                          $cantCapIni += $worksheet->getCell('M'.$row)->getValue();
-                          $cantTotal += $worksheet->getCell('N'.$row)->getValue();
-
+                          $deudasNuevas++;
+                          $cantCapIni += $capital_inicial;
+                          $cantTotal += $total;
                           $deudasNuevas++;
 
                   //hago insert en deudas gestiones informando la asigancion de la deuda
@@ -497,12 +512,15 @@ class CarterasController extends AppController
                                                total = :total" ,   ['deudor_id' => $id,
                                                         'cartera_id' => $idCartera,
                                                         'producto' => $worksheet->getCell('I'.$row)->getValue(),
-                                                        'numero_producto' => $worksheet->getCell('J'.$row)->getValue(),
-                                                        'dias_mora' =>  $worksheet->getCell('L'.$row)->getValue(),
-                                                        'capital_inicial' => $worksheet->getCell('M'.$row)->getValue(),
-                                                        'total' => $worksheet->getCell('N'.$row)->getValue()]);
-                      $deuda_id = current($deuda_id->fetchAll('assoc'));
-                      $desc = 'Caso asignado a '.$worksheet->getCell('O'.$row)->getValue() . ' el día :'. date('d-m-Y');
+                                                        'producto' => $producto,
+                                                        'numero_producto' => $numero_producto,
+                                                        'dias_mora' =>  $dias_mora,
+                                                        'capital_inicial' => $capital_inicial,
+                                                        'total' => $total]);
+
+                    $deuda_id = current($deuda_id->fetchAll('assoc'));
+                    $usuario_asignado =  !empty($worksheet->getCell('O'.$row)->getValue()) ? $worksheet->getCell('O'.$row)->getValue() : '';
+                    $desc = 'Caso asignado a '.$usuario_asignado. ' el día :'. date('d-m-Y');
                         $connection->insert('deudas_gestiones', [
                           'deuda_id' => $deuda_id['Id'],
                           'descripcion' => $desc,
