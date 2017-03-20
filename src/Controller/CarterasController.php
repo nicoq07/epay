@@ -393,10 +393,10 @@ class CarterasController extends AppController
                         //////// formateo la hora del excel en un timestamp para la BD
                         $cell = $worksheet->getCell('K' . $row);
                         $fecha_mora = '';
-                        if(\PHPExcel_Shared_Date::isDateTime($cell)) {
-                          echo 'entra';
+                        // if(\PHPExcel_Shared_Date::isDateTime($cell)) {
+
                              $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($cell->getValue()));
-                        }
+                        // }
                         $producto =  !empty($worksheet->getCell('I'.$row)->getValue()) ? $worksheet->getCell('I'.$row)->getValue() : '';
                         $numero_producto= !empty($worksheet->getCell('J'.$row)->getValue()) ? $worksheet->getCell('J'.$row)->getValue() : '';
                         $dias_mora = !empty($worksheet->getCell('L'.$row)->getValue()) ? $worksheet->getCell('L'.$row)->getValue() : '';
