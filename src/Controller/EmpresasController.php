@@ -22,11 +22,11 @@ class EmpresasController extends AppController
          {
              return false;
          }
-         elseif (isset($user['role_id']) and $user['role_id'] == 2) {
-             if(in_array($this->request->action, ['edit','add','view,index']))
-             {
+         elseif (isset($user['role_id']) and $user['role_id'] == 2)
+          {
+
                  return true;
-             }
+             
 
          }
          return parent::isAuthorized($user);
