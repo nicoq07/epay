@@ -131,7 +131,13 @@ class CarterasController extends AppController
 
    public function exportar($idCartera = null)
    {
-     if ($this->request->is(['patch', 'post', 'put']) && !empty($idCartera))
+     if (!empty($this->request->data['cartera']) )
+     {
+       $idCartera = $this->request->data['cartera'];
+     }
+
+
+     if (!empty($idCartera))
      {
       $queryReporte = "SELECT
                         deu.nombre nom, deu.dni dni, d.producto prod, d.numero_producto nump, d.capital_inicial capini, d.total total, e.descripcion estado ,
@@ -191,8 +197,8 @@ class CarterasController extends AppController
           {
         		$_row = $_row +1;
 
-            $fechaMora = date('d-m-Y', strtotime($item['fechamora']));
-            $fechaGestion = date('d-m-Y', strtotime($item['fecha']));
+            $fechaMora = date('d/m/Y', strtotime($item['fechamora']));
+            $fechaGestion = date('d/m/Y', strtotime($item['fecha']));
         		$objPHPExcel->setActiveSheetIndex(0)
         				->setCellValue('A'.$_row, $item['nom'])
         				->setCellValue('B'.$_row, $item['dni'])
@@ -269,8 +275,9 @@ class CarterasController extends AppController
           	$objWriter->save('php://output');
             return;
           }
+          $cartera = $this->Carteras->newEntity();
           $carteras = $this->Carteras->find('list');
-          $this->set(compact('carteras'));
+          $this->set(compact('carteras','cartera'));
       }
 
     public function subir($idCartera = null, $confirmar = null)
@@ -385,9 +392,10 @@ class CarterasController extends AppController
 
                         //////// formateo la hora del excel en un timestamp para la BD
                         $cell = $worksheet->getCell('K' . $row);
-                        $fecha_mora= $cell->getValue();
+                        $fecha_mora = '';
                         if(\PHPExcel_Shared_Date::isDateTime($cell)) {
-                             $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($fecha_mora));
+                          echo 'entra';
+                             $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($cell->getValue()));
                         }
                         $producto =  !empty($worksheet->getCell('I'.$row)->getValue()) ? $worksheet->getCell('I'.$row)->getValue() : '';
                         $numero_producto= !empty($worksheet->getCell('J'.$row)->getValue()) ? $worksheet->getCell('J'.$row)->getValue() : '';
