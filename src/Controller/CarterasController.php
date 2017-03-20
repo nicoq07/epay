@@ -391,12 +391,14 @@ class CarterasController extends AppController
                         ///deuda
 
                         //////// formateo la hora del excel en un timestamp para la BD
-                        $cell = $worksheet->getCell('K' . $row);
-                        $fecha_mora = '';
+                        // $cell = $worksheet->getCell('K' . $row);
+                        // $fecha_mora = '';
                         // if(\PHPExcel_Shared_Date::isDateTime($cell)) {
-
-                             $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($cell->getValue()));
+                        //
+                        //      $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($cell->getValue()));
                         // }
+                        $fecha_mora_bruta = $worksheet->getCell('K'.$row)->getValue();
+                        $fecha_mora = date('Y-m-d h:i:s', strtotime(str_replace("/", "-", $fecha_mora_bruta)););
                         $producto =  !empty($worksheet->getCell('I'.$row)->getValue()) ? $worksheet->getCell('I'.$row)->getValue() : '';
                         $numero_producto= !empty($worksheet->getCell('J'.$row)->getValue()) ? $worksheet->getCell('J'.$row)->getValue() : '';
                         $dias_mora = !empty($worksheet->getCell('L'.$row)->getValue()) ? $worksheet->getCell('L'.$row)->getValue() : '';
@@ -461,11 +463,13 @@ class CarterasController extends AppController
 
                     $id = $deudor_id->fetchAll()[0][0];
                       //////// formateo la hora del excel en un timestamp para la BD
-                      $cell = $worksheet->getCell('K' . $row);
-                      $fecha_mora= $cell->getValue();
-                      if(\PHPExcel_Shared_Date::isDateTime($cell)) {
-                           $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($fecha_mora));
-                      }
+                      // $cell = $worksheet->getCell('K' . $row);
+                      // $fecha_mora= $cell->getValue();
+                      // if(\PHPExcel_Shared_Date::isDateTime($cell)) {
+                      //      $fecha_mora = date('Y-m-d h:i:s', \PHPExcel_Shared_Date::ExcelToPHP($fecha_mora));
+                      // }
+                      $fecha_mora_bruta = $worksheet->getCell('K'.$row)->getValue();
+                      $fecha_mora = date('Y-m-d h:i:s', strtotime(str_replace("/", "-", $fecha_mora_bruta)););
                       ///////////////////////////////////////////////
                       //Busco el operador asignado, ellos me pasan el nombre completo y yo tengo
                       //que traerme el id
