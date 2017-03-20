@@ -39,7 +39,8 @@ class DeudasController extends AppController
               return true;
           }
       }
-      elseif (isset($user['role_id']) and $user['role_id'] == 2) {
+      elseif (isset($user['role_id']) && $user['role_id'] == 2) {
+      
          return true;
       }
 

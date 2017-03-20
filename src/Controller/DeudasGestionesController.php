@@ -72,7 +72,7 @@ class DeudasGestionesController extends AppController
      */
     public function add($deuda_id = null)
     {
-        $cabecera = 'Operador '. $this->current_user['nombre']." ".$this->current_user['apellido'] . 'ha escrito: ' ;
+        $cabecera = 'Operador '. $this->Auth->user('nombre')." ".$this->Auth->user('apellido') . ' ha escrito: ' ;
 
       if (empty($deuda_id))
         {
@@ -93,7 +93,7 @@ class DeudasGestionesController extends AppController
 
             if ($this->request->data['estado_id'] == 7)
       			{
-      				$connection->update('deudas', ['estado_id' => $this->request->data['estado_id'] , 'contactado' => true ], ['id' => $deudasGestione->deuda_id]);
+      				$connection->update('deudas', ['estado_id' => $this->request->data['estado_id'] , 'acuerdo' => true ], ['id' => $deudasGestione->deuda_id]);
       			}
       			else
       			{

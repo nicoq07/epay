@@ -14,7 +14,7 @@
 <!--                    <th scope="col"><?= $this->Paginator->sort('calificacion') ?></th>-->
 <!--                    <th scope="col"><?= $this->Paginator->sort('active') ?></th>-->
 <!--                    <th scope="col"><?= $this->Paginator->sort('created') ?></th>-->
-                     <th scope="col"><?= $this->Paginator->sort('nombre',['label' => 'Nombre y Apellido']) ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('nombre',['label' => 'Nombre y Apellido']) ?></th>
                     <th scope="col"><?= $this->Paginator->sort('dni',['label' => 'DNI']) ?></th>
                     <th scope="col"><?= $this->Paginator->sort('modified', ['label' => 'Última vez modificado']) ?></th>
                     <th scope="col"><?= $this->Paginator->sort('direccion', ['label' => 'Domicilio']) ?></th>
