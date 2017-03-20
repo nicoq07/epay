@@ -22,6 +22,6 @@
         ?>
     </fieldset>
     <div class="page-header" > </div>
-    <?= $this->Form->button(__('Guardar'),['method' => 'post', class'=>'btn btn-xl btn-info'])?>
+    <?= $this->Form->button(__('Guardar'),['class'=>'btn btn-xl btn-info'])?>
     <?= $this->Form->end() ?>
 </div>
