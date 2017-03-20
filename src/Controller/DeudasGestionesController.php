@@ -32,7 +32,7 @@ class DeudasGestionesController extends AppController
         $notAdmin = null;
         $notDeuda = null;
         if (!empty($idDeuda)) $notDeuda = ['deuda_id' => $idDeuda];
-        if ($this->Auth->user('role_id') !== 1 || $this->Auth->user('role_id') !== 2 ) $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
+        if ($this->Auth->user('role_id') !== 1 && $this->Auth->user('role_id') !== 2 ) $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
         $this->paginate = [
           'contain' => ['Deudas'],
           'conditions' => [$notDeuda ,$notAdmin],

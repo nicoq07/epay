@@ -61,7 +61,7 @@ class DeudasController extends AppController
         $this->set('_serialize', ['deudas']);*/
 
         $notAdmin = null;
-        if ($this->Auth->user('role_id') !== 1 || $this->Auth->user('role_id') !== 2 ) $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
+        if ($this->Auth->user('role_id') !== 1 && $this->Auth->user('role_id') !== 2 ) $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
         $this->paginate = [
           'contain' => ['Deudores', 'Carteras', 'Users','EstadosDeudas'],
           'conditions' => [$notAdmin],
