@@ -39,7 +39,7 @@
             <?php foreach ($deudas as $deuda): ?>
             <tr>
 
-                <td><?= $deuda->has('deudore') ? $this->Html->link($deuda->deudore->presentacionSimple, ['controller' => 'Deudores', 'action' => 'view', $deuda->deudore->Id]) : '' ?></td>
+                <td><?= $deuda->has('deudore') ? $this->Html->link($deuda->deudore->dni, ['controller' => 'Deudores', 'action' => 'view', $deuda->deudore->Id]) : '' ?></td>
                 <td><?= $deuda->has('cartera') ? $this->Html->link($deuda->cartera->descripcion, ['controller' => 'Carteras', 'action' => 'view', $deuda->cartera->Id]) : '' ?></td>
                  <td><?= $deuda->has('user') ? $this->Html->link($deuda->user->presentacion, ['controller' => 'Carteras', 'action' => 'view', $deuda->cartera->Id]) : '' ?></td>
                 <td><?= h($deuda->producto) ?></td>

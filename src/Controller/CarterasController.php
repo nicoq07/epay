@@ -34,11 +34,11 @@ class CarterasController extends AppController
     {
         if(isset($user['role_id']) and $user['role_id'] == 2)
         {
-            if(in_array($this->request->action, ['index','view','edit','search']))
-            {
+
                 return true;
-            }
+          
         }
+
         return parent::isAuthorized($user);
     }
 
