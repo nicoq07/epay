@@ -86,12 +86,12 @@ class DeudasGestionesController extends AppController
         if ($this->request->is('post')) {
 
 
-            echo $cabecera;
+
             $deudasGestione = $this->DeudasGestiones->patchEntity($deudasGestione, $this->request->data);
             $deudasGestione['descripcion'] = $cabecera.$deudasGestione['descripcion'];
             $connection = ConnectionManager::get('default');
 
-            if ($this->request->data['estado_id'] == 7)
+            if ($this->request->data['estado_id'] == 6)//estado acuerodepago debe ser id 6
       			{
       				$connection->update('deudas', ['estado_id' => $this->request->data['estado_id'] , 'acuerdo' => true ], ['id' => $deudasGestione->deuda_id]);
       			}

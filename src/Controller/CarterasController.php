@@ -36,7 +36,7 @@ class CarterasController extends AppController
         {
 
                 return true;
-          
+
         }
 
         return parent::isAuthorized($user);
@@ -293,6 +293,7 @@ class CarterasController extends AppController
         $deudoresNuevos = 0;
         $deudasNuevas = 0;
         $deudasActualizadas = 0;
+        $asignaciones = 0;
         $id = null;
         if ($this->request->is('post')) {
               if(!empty($this->request->data['file']['name']))
@@ -386,6 +387,7 @@ class CarterasController extends AppController
                         {
                           $user_id =   $connection->execute("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE :nomyape", ['nomyape' => $worksheet->getCell('O'.$row)->getValue()]);
                           $user_id = current($user_id->fetchAll('assoc'));
+                          $asignaciones++;
                         }
                         //cargo la deuda
                         ///deuda
@@ -530,6 +532,7 @@ class CarterasController extends AppController
 
                     $deuda_id = current($deuda_id->fetchAll('assoc'));
                     $usuario_asignado =  !empty($worksheet->getCell('O'.$row)->getValue()) ? $worksheet->getCell('O'.$row)->getValue() : '';
+                    $asignaciones++;
                     $desc = 'Caso asignado a '.$usuario_asignado. ' el día :'. date('d-m-Y');
                         $connection->insert('deudas_gestiones', [
                           'deuda_id' => $deuda_id['Id'],
@@ -571,7 +574,7 @@ class CarterasController extends AppController
 
                     }
 
-                  $this->Flash->default("Confirma: Total deudas: $cantDeudas , Total Capital Inicial: $cantCapIni , Total Actualizado : $cantTotal  Deudores nuevos : $deudoresNuevos ? ");
+                  $this->Flash->default("Confirma: Total deudas: $cantDeudas , Total Capital Inicial: $cantCapIni , Total Actualizado : $cantTotal  Deudores nuevos : $deudoresNuevos , Casos asignados: $asignaciones ? ");
 
               }
 

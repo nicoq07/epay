@@ -33,7 +33,7 @@ class UsersController extends AppController
           }
       }
 
-      
+
       return parent::isAuthorized($user);
     }
 
@@ -56,7 +56,8 @@ class UsersController extends AppController
               $login = $connection->execute("SELECT user_id FROM user_login WHERE user_id = ?", [$user['id']]);
               if ($login->count() == 0)
                 {
-                  $connection->insert('user_login', ['user_id' => $user['id']]);
+                  $connection->insert('user_login', ['user_id' => $user['id'],'fecha_activo' => new \DateTime('now')],
+                  ['fecha_activo' => 'datetime']);
                   $this->Auth->setUser($user);
                   return $this->redirect($this->Auth->redirectUrl());
                 }

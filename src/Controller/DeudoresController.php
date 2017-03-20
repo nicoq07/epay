@@ -126,25 +126,35 @@ class DeudoresController extends AppController
 
     public function search()
     {
-      $dni = 0;
-      $deudore = $this->Deudores->newEntity();
-      if ($this->request->is(['post']) )
+      $busqueda = "";
+      $this->paginate = [
+          'contain' => []
+      ];
+
+      if ($this->request->is(['post']) && !empty($this->request->data['busqueda']))
       {
-         $dni = $this->request->data['busqueda'];
-         $deudore = $this->Deudores->find('pordni',['deudor' => $dni]);
+        $busqueda = $this->request->data['busqueda'];
+        $search = $this->request->data['busqueda'];
 
-        //   if (empty($deudore))
-        //   {
-        //     $this->Flash->error(__('No se encontró deudor con DNI: '. $dni));
-        //   }
+
+           $conditions = ['conditions' => [
+                            'or' => [
+                                'nombre LIKE' => "%$search%",
+                                'dni LIKE' => "%$search%"
+                            ]
+                        ]
+                    ];
+
+
+         $this->set('deudores', $this->paginate($this->Deudores->find('all',$conditions)));
 
       }
-      else {
-          $this->Flash->error(__('Ups, salió algo mal...'));
+      else{
+          $this->set('deudores', $this->paginate($this->Deudores));
       }
 
 
-      $this->set('deudore', $deudore);
+      $this->set(compact('deudores' ,'busqueda'));
 
     }
 
