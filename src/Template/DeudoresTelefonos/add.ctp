@@ -18,6 +18,6 @@
             echo $this->Form->input('telefono');
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
+    <?= $this->Form->button(__('Guardar')) ?>
     <?= $this->Form->end() ?>
 </div>

@@ -32,8 +32,9 @@
         <?php if ($deuda->producto) :?>
         <div class="col-lg-6 resaltar-div gris-grisblanco " > <?= h($deuda->producto) ?> </div>
         <?php endif; ?>
+        <?php if ($deuda->fecha_mora) :?>
       <div class="col-lg-6 resaltar-div verde-negro" > <?=  h('Fecha de mora: ' . $deuda->fecha_mora->format('d/m/Y')) ?> </div>
-        
+        <?php endif; ?>
        
         <div class="col-lg-6 resaltar-div celeste-negro" >
             <div>Propietario: <span><?= $deuda->has('user') ? $this->Html->link($deuda->user->presentacion, ['controller' => 'Users', 'action' => 'view', $deuda->user->id]) : 'Sin asignar' ?></span>  </div>

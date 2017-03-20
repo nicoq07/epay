@@ -131,16 +131,18 @@ class CarterasController extends AppController
 
    public function exportar($idCartera = null)
    {
-
+     if ($this->request->is(['patch', 'post', 'put']) && !empty($idCartera))
+     {
       $queryReporte = "SELECT
                         deu.nombre nom, deu.dni dni, d.producto prod, d.numero_producto nump, d.capital_inicial capini, d.total total, e.descripcion estado ,
                         d.fecha_mora fechamora , dg.descripcion gestion, dg.created fecha , CONCAT(u.nombre,' ',u.apellido) operador
                         from deudas d
                         INNER JOIN deudores deu ON deu.Id = d.deudor_id
+                        INNER JOIN carteras car ON car.Id = d.cartera_id
                         INNER JOIN users u ON u.id = d.usuario_id
                         INNER JOIN estados_deudas e ON e.id = d.estado_id
                         INNER JOIN deudas_gestiones dg ON dg.deuda_id = d.Id
-                        WHERE dg.Id = ( SELECT MAX(dg2.id) FROM deudas_gestiones dg2 where dg2.deuda_id = d.Id  group by dg2.deuda_id )";
+                        WHERE car.Id = $idCartera AND dg.Id = ( SELECT MAX(dg2.id) FROM deudas_gestiones dg2 where dg2.deuda_id = d.Id  group by dg2.deuda_id )";
 
             $connection = ConnectionManager::get('default');
             $resultExport = $connection
@@ -266,18 +268,16 @@ class CarterasController extends AppController
           	$objWriter=\PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
           	$objWriter->save('php://output');
             return;
-
-////////
-
-            ///////////////////////////////////////////////////////////////////////////////
           }
+          $carteras = $this->Carteras->find('list');
+          $this->set(compact('carteras'));
+      }
 
     public function subir($idCartera = null, $confirmar = null)
     {
         // require_once(ROOT . DS . 'src' . DS . 'Classes' . DS . 'PHPExcel.php');
 
         $connection = ConnectionManager::get('default');
-
         $uploadFile = 'uploads/files/cartera.xlsx';
         $cartera = $this->Carteras->newEntity();
         $cantDeudas = -1;
@@ -589,4 +589,65 @@ class CarterasController extends AppController
         $this->set(compact('cartera','archivo'));
 
     }
+
+    public function exportarCabecera()
+    {
+      $objPHPExcel = new \PHPExcel();
+      ini_set('memory_limit', '-1');
+    	$objPHPExcel->
+    		getProperties()
+    			->setCreator($this->current_user['nombre']. " ".$this->current_user['apellido'])
+    			->setTitle("cabecera");
+
+
+          $objPHPExcel->setActiveSheetIndex(0)
+        				->setCellValue('A1', 'nombre')
+        				->setCellValue('B1', 'dni')
+        				->setCellValue('C1', 'domicilio')
+        				->setCellValue('D1', 'provincia')
+        				->setCellValue('E1', 'localidad')
+        				->setCellValue('F1', 'laboral')
+        				->setCellValue('G1', 'cantidad')
+        				->setCellValue('H1', 'categoria')
+                ->setCellValue('I1', 'producto')
+                ->setCellValue('J1', 'numero_producto')
+                ->setCellValue('K1', 'fecha_mora')
+                ->setCellValue('L1', 'dias_mora')
+                ->setCellValue('M1', 'capital_inicial')
+                ->setCellValue('N1', 'total')
+                ->setCellValue('O1', 'asignado')
+                ->setCellValue('P1', 'telefono')
+                ->setCellValue('Q1', 'telefono')
+                ->setCellValue('R1', 'telefono')
+                ->setCellValue('S1', 'telefono')
+                ->setCellValue('T1', 'telefono')
+                ->setCellValue('U1', 'telefono')
+                ->setCellValue('V1', 'telefono');
+
+                foreach (range('A', $objPHPExcel->getActiveSheet()->getHighestDataColumn()) as $col)
+                {
+                      $objPHPExcel->getActiveSheet()
+                              ->getColumnDimension($col)
+                              ->setAutoSize(true);
+                  }
+
+                  // Seteo el nombre del archivo
+
+                  $_file_name_aux = "cabecera";
+
+                  //header("Content-Type:   application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
+                  header('Content-Type: application/vnd.ms-excel');
+                  header('Content-Disposition: attachment;filename='.$_file_name_aux.'.xls');
+                  header('Cache-Control: max-age=0');
+
+
+                  $objWriter=\PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
+                  $objWriter->save('php://output');
+                  return;
+
+    }
+
+
+
+
 }

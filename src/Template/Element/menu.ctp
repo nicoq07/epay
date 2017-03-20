@@ -76,10 +76,27 @@
                             </li>
                           </ul>
                       </li>
+                    <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Archivos<span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+                              <?php if($current_user['role_id'] == 1 || $current_user['role_id'] == 2): ?>
+                              <li>
+                                  <?=  $this->Html->link('Exportar cabecera', ['controller' => 'Carteras', 'action' => 'exportarCabecera']) ?>
+                              </li>
+                              <li>
+                                  <?=  $this->Html->link('Exportar informe', ['controller' => 'Carteras', 'action' => 'exportar']) ?>
+                              </li>
+                              <?php endif; ?>
+                              
+                          </ul>
+                      </li>
 
-
+                    
                   </ul>
+                 
+                    
 
+                    
 
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
