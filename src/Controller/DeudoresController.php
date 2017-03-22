@@ -20,7 +20,7 @@ class DeudoresController extends AppController
             }
         }
         elseif (isset($user['role_id']) && $user['role_id'] == 2) {
-            if(in_array($this->request->action, ['edit','add','view','index']))
+            if(in_array($this->request->action, ['edit','add','view','index','search']))
             {
                 return true;
             }
