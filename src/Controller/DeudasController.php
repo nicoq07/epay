@@ -40,7 +40,7 @@ class DeudasController extends AppController
           }
       }
       elseif (isset($user['role_id']) && $user['role_id'] == 2) {
-      
+
          return true;
       }
 
@@ -215,7 +215,8 @@ class DeudasController extends AppController
         $this->paginate = [
           'contain' => ['Deudores', 'Carteras', 'Users','EstadosDeudas'],
           //'conditions' => [$notAdmin,'Deudas.active' =,''> '1'],
-          'order' => ['id' => 'desc']
+          'order' => ['id' => 'desc'],
+          'limit' => 100
         ];
 
       if ($this->request->is(['patch', 'post', 'put']))

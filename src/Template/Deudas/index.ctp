@@ -13,7 +13,7 @@
                 <th scope="col"><?= $this->Paginator->sort('deudor_id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('cartera_id') ?></th>
                 <?php if ($current_user['role_id'] == 1): ?>
-                <th scope="col"><?= $this->Paginator->sort('user_id', ['label'=>'Asignado a:']) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('usuario_id', ['label'=>'Asignado a:']) ?></th>
                 <?php endif; ?>
                 <th scope="col"><?= $this->Paginator->sort('producto') ?></th>
                 
