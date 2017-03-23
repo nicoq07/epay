@@ -80,15 +80,15 @@
                     <li class="dropdown">
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Archivos<span class="caret"></span></a>
                           <ul class="dropdown-menu" role="menu">
-                              
+
                               <li>
                                   <?=  $this->Html->link('Exportar cabecera', ['controller' => 'Carteras', 'action' => 'exportarCabecera']) ?>
                               </li>
                               <li>
                                   <?=  $this->Html->link('Exportar informe', ['controller' => 'Carteras', 'action' => 'exportar']) ?>
                               </li>
-                              
-                              
+
+
                           </ul>
                       </li>
                     <?php endif; ?>
@@ -96,25 +96,28 @@
                     <li class="dropdown">
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Estados<span class="caret"></span></a>
                           <ul class="dropdown-menu" role="menu">
-                              
+
                               <li>
                                   <?=  $this->Html->link('Ver estados', ['controller' => 'EstadosDeudas', 'action' => 'index']) ?>
                               </li>
                               <li>
                                   <?=  $this->Html->link('Nuevos estado', ['controller' => 'EstadosDeudas', 'action' => 'add']) ?>
                               </li>
-                              
-                              
+
+
                           </ul>
                       </li>
                     <?php endif; ?>
+                    <?php if($current_user['role_id'] == 1 || $current_user['role_id'] == 2): ?>
 
-                    
+                    <?php endif; ?>
+
+
                   </ul>
-                 
-                    
 
-                    
+
+
+
 
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
@@ -128,6 +131,9 @@
                                   <?=  $this->Html->link('Listar usuarios', ['controller' => 'Users', 'action' => 'index']) ?>
                               </li>
                               <?php endif; ?>
+                              <li>
+                                  <?=  $this->Html->link('Mensajes', ['controller' => 'Notificaciones', 'action' => 'index']) ?>
+                              </li>
                               <li>
                                 <?= $this->Html->link('Salir', ['controller' => 'Users', 'action' => 'logout']) ?>
                               </li>

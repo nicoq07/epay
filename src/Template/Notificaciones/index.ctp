@@ -1,54 +1,93 @@
-<?php
-/**
-  * @var \App\View\AppView $this
-  */
-?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Notificacione'), ['action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="notificaciones index large-9 medium-8 columns content">
-    <h3><?= __('Notificaciones') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('emisor') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('receptor') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('leida') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('broadcast') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($notificaciones as $notificacione): ?>
-            <tr>
-                <td><?= $this->Number->format($notificacione->id) ?></td>
-                <td><?= $this->Number->format($notificacione->emisor) ?></td>
-                <td><?= $this->Number->format($notificacione->receptor) ?></td>
-                <td><?= h($notificacione->leida) ?></td>
-                <td><?= h($notificacione->broadcast) ?></td>
-                <td><?= h($notificacione->created->format('d/m/Y')) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $notificacione->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $notificacione->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $notificacione->id], ['confirm' => __('Are you sure you want to delete # {0}?', $notificacione->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
-    </div>
+<div class="container-fluid">
+    <div class="row">
+		 <!-- <div class="col-md-3"> -->
+        	 <!-- <div class="row chats-row">
+                <div class="col-md-12">
+                    <a href="#" class="list-group-item open-request">
+                       <p>Name:  Matthew Townsen</p>
+                       <p>Email:  mtownsen@teamsupport.com</p>
+                       <p>Time:  2:47 PM</p>
+                       <p>Message:  It's all broken</p>
+                       <button class="btn btn-default">Accept</button>
+                    </a>
+                    <a href="#" class="list-group-item chat-request">Robert Johnson - Muroc Industries</a>
+        	    </div>
+                <div class="col-md-12">
+                    <a href="#" class="list-group-item">Travis Pitts - TeamSupport</a>
+                    <a href="#" class="list-group-item list-group-item-success">Heather Townsen - MyCCA</a>
+                    <a href="#" class="list-group-item active">Eric Harrington - TeamSupport</a>
+                </div>
+        	 </div> -->
+	 <!-- </div> -->
+        <div class="col-md-12 current-chat">
+            <div class="row chat-toolbar-row">
+                <div class="col-sm-12">
+
+                    <div class="btn-group chat-toolbar" role="group" aria-label="...">
+                        <?=  $this->Html->link(' Nuevo mensaje', ['controller' => 'Notificaciones', 'action' => 'add'],['class' => 'btn btn-default ticket-option fa fa-pencil ']) ?>
+
+
+                        <!-- <button id="chat-invite" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-plus"></i> Invite
+                        </button>
+                        <button id="chat-customer" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-user"></i> Open Customer
+                        </button>
+                        <button id="chat-create-ticket" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-pencil"></i> Create Ticket
+                        </button>
+                        <button id="chat-add-ticket" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-plus"></i> Add to Ticket
+                        </button>
+                        <button id="chat-open-ticket" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-open"></i> Open Ticket
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row current-chat-area">
+
+                <div class="col-lg-12">
+                      <ul class="media-list">
+                          <?php foreach ($notificaciones as $mensaje) :  ?>
+                        <li class="media">
+
+                            <div class="media-body">
+                                <div class="media">
+                                    <div class="pull-left icono-mensaje" href="#">
+                                       <!-- <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
+                                        <div class="media-object img-circle">-->
+                                        <?= h($users[$mensaje->emisor]) ?>
+                                     <!--  </div> -->
+                                    </div>
+                                    <div class="media-body">
+                                        <?= h($mensaje->descripcion) ?>
+                                        <br>
+                                        <small class="text-muted">  <?="  " . h($mensaje->created->format('h:m a d-m-Y '))  ?></small>
+                                        <hr>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </li>
+                          <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- <div class="row current-chat-footer col-md-12">
+            <div class="panel-footer">
+                <div class="input-group">
+                  <input type="text" class="form-control">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">Enviar</button>
+                  </span>
+                </div>
+                </div>
+            </div> -->
+		</div>
+    <?= $this->element('footer') ?>
+	</div>
 </div>

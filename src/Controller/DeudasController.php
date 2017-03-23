@@ -26,7 +26,7 @@ class DeudasController extends AppController
   public function initialize()
       {
           parent::initialize();
-          Number::defaultCurrency('USD');
+          // Number::defaultCurrency('USD');
           $this->loadComponent('Paginator');
       }
 
@@ -262,7 +262,87 @@ class DeudasController extends AppController
 
     }
 
+    public function subir()
+    {
+        // require_once(ROOT . DS . 'src' . DS . 'Classes' . DS . 'PHPExcel.php');
 
+        $connection = ConnectionManager::get('default');
+        $uploadFile = 'uploads/files';
+        $uploadName = '';
+        $deuda = $this->Deudas->newEntity();
+        $id = null;
+        if ($this->request->is('post')) {
+
+              if(!empty($this->request->data['file']['name']))
+              {
+
+                $uploadName = $this->request->data['file']['name'];
+                 $uploadFile .= $uploadName;
+
+
+                if(!move_uploaded_file($this->request->data['file']['tmp_name'],$uploadFile))
+                {
+                   $this->Flash->error("Tenemos un problema para cargar el archivo");
+                }
+              }
+
+
+                if (file_exists($uploadFile))
+                {
+                  $connection->begin();
+                  $excelReader = \PHPExcel_IOFactory::createReaderForFile($uploadFile);
+                  $excelObj = $excelReader->load($uploadFile);
+                  $worksheet = $excelObj->getSheet(0);
+                  $lastRow = $worksheet->getHighestRow();
+                  $hoja = null;
+                  for ($row = 2; $row <= $lastRow; $row++)
+                  {
+                    $cantDeudas = $row;
+                    //deudor
+                    //pregunto si existe el deudor con dni tanto
+                      $dni = !empty($worksheet->getCell('A'.$row)->getValue()) ? $worksheet->getCell('A'.$row)->getValue() : 0;
+                    $resultId =  $connection->query('SELECT Id FROM deudores WHERE dni = '.$dni);
+                    //debug($resultId->fetchAll('assoc')[0]['Id']);
+                    $id = $resultId->fetchAll('assoc')[0]['Id'];
+
+                    //si el count es 0, osea no trajo nada lo voy a insertar
+                    // si el count es 1, ese deudor ya existe no lo inserto pero cargo sus deudas.
+                    //sumo uno a DEudores nuevos
+
+                    $cod = !empty($worksheet->getCell('B'.$row)->getValue()) ? $worksheet->getCell('B'.$row)->getValue() : 0;
+                    $cod2 = !empty($worksheet->getCell('C'.$row)->getValue()) ? $worksheet->getCell('C'.$row)->getValue() : 0;
+
+                    // $connection->update('articles', ['title' => 'New title'], ['id' => 10]);
+                   $connection->update('deudas', [
+                            'codpagar' => $cod,
+                            'codpagar2' => $cod2],
+                            ['deudor_id' => $id]);
+
+
+
+
+                    ///Acá el Duedor ya exite y solo le cargo la info de la deuda
+                  } // fin FOR
+                    //   $connection->commit();
+
+                  }
+                              $connection->commit();
+                              $this->Flash->success("Cartera subida");
+
+
+
+
+                  // $this->Flash->default("Confirma: Total deudas: $cantDeudas , Total Capital Inicial: $cantCapIni , Total Actualizado : $cantTotal  Deudores nuevos : $deudoresNuevos , Casos asignados: $asignaciones ? ");
+
+
+
+
+
+      }//fin del request->post
+
+        $this->set(compact('deuda'));
+
+    }
 
 
 

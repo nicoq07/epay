@@ -9,7 +9,7 @@
 <div>
 <!--
     <div class="row well">
-        
+
          <div class="col-lg-2">
                <?= $this->Html->link(__('Editar'), ['controller' => 'Deudas' ,'action' => 'edit', $deuda->Id],['class' => 'btn btn-xl btn-warning']) ?>
           </div>
@@ -26,7 +26,7 @@
       <div class="col-lg-6 resaltar-div naranjita-negro " > <?=  h('Capital Actualizado: ' . $this->Number->format($deuda->total,[
                                   'before' => '$',
                                   'locale' => 'es_Ar'
-                                  ])) ?> 
+                                  ])) ?>
         </div>
       <div class="col-lg-6 resaltar-div rojo-negro" > Estado: <span><?= $deuda->has('estados_deuda') ? h($deuda->estados_deuda->descripcion) : 'Sin estado' ?></span>  </div>
         <?php if ($deuda->producto) :?>
@@ -35,7 +35,7 @@
         <?php if ($deuda->fecha_mora) :?>
       <div class="col-lg-6 resaltar-div verde-negro" > <?=  h('Fecha de mora: ' . $deuda->fecha_mora->format('d/m/Y')) ?> </div>
         <?php endif; ?>
-       
+
         <div class="col-lg-6 resaltar-div celeste-negro" >
             <div>Propietario: <span><?= $deuda->has('user') ? $this->Html->link($deuda->user->presentacion, ['controller' => 'Users', 'action' => 'view', $deuda->user->id]) : 'Sin asignar' ?></span>  </div>
         </div>
@@ -66,12 +66,12 @@
 <!--
         <tr>
             <th scope="row"><?= __('Estado') ?></th>
-            
+
 
             <td>
                 <?= $deuda->has('estados_deuda') ? h($deuda->estados_deuda->descripcion) : '' ?>
             </td>
-            
+
 
         </tr>
 -->
@@ -112,8 +112,12 @@
         </tr>
 -->
         <tr>
-            <th scope="row"><?= __('Codigo de pago') ?></th>
+            <th scope="row"><?= __('Codigo Rapipago') ?></th>
             <td><?= h($deuda->codpagar) ?></td>
+        </tr>
+        <tr>
+            <th scope="row"><?= __('Codigo PagoFacil') ?></th>
+            <td><?= h($deuda->codpagar2) ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Creado') ?></th>
@@ -123,7 +127,7 @@
             <th scope="row"><?= __('Modificado') ?></th>
             <td><?= h($deuda->modified->format('d/m/Y')) ?></td>
         </tr>
-        
+
         <tr>
             <th scope="row"><?= __('Dias Mora') ?></th>
             <td><?= h($deuda->dias_mora) ?></td>

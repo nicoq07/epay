@@ -10,7 +10,7 @@
     'type' => 'icon'
 ) ); ?>
 
-    <?= $this->Html->css(['bootstrap.min','hoja.css','font-awesome.css']) ?>
+    <?= $this->Html->css(['bootstrap.css','hoja.css','font-awesome.css']) ?>
     <?= $this->Html->script(['jquery-3.1.1.min','bootstrap.min','funciones.js']) ?>
 
     <?= $this->fetch('meta') ?>

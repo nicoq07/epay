@@ -1,5 +1,6 @@
- <?= $this->element('volverAtras') ?>
+<?= $this->element('volverAtras') ?>
 <div class="container-fluid well">
+
     <div class="page-header">
     <h3>Deudas</h3>
     </div>
@@ -16,7 +17,7 @@
                 <th scope="col"><?= $this->Paginator->sort('usuario_id', ['label'=>'Asignado a:']) ?></th>
                 <?php endif; ?>
                 <th scope="col"><?= $this->Paginator->sort('producto') ?></th>
-                
+
                 <th scope="col"><?= $this->Paginator->sort('numero_producto') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('capital_inicial') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('total',['label' => 'Capital actualizado']) ?></th>

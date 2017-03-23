@@ -18,15 +18,15 @@ class NotificacionesController extends AppController
      */
      public function isAuthorized($user)
      {
-     if(isset($user['role_id']) and $user['role_id'] == 3)
+     if(isset($user['role_id']) && $user['role_id'] == 3)
      {
          if(in_array($this->request->action, ['view','add']))
          {
              return true;
          }
      }
-     elseif (isset($user['role_id']) and $user['role_id'] == 2) {
-         if(in_array($this->request->action, ['edit','add','view','index']))
+     elseif (isset($user['role_id']) && $user['role_id'] == 2) {
+         if(in_array($this->request->action, ['add','view','index']))
          {
              return true;
          }
@@ -35,9 +35,12 @@ class NotificacionesController extends AppController
    }
     public function index()
     {
+      $this->paginate = [
+        'conditions' => ['Notificaciones.receptor' => $this->Auth->user('id')],
+        'order' => ['Notificaciones.created' => 'desc']];
         $notificaciones = $this->paginate($this->Notificaciones);
-
-        $this->set(compact('notificaciones'));
+        $users = $this->Notificaciones->Users->find('list')->toArray();
+        $this->set(compact('notificaciones','users'));
         $this->set('_serialize', ['notificaciones']);
     }
 
@@ -68,12 +71,14 @@ class NotificacionesController extends AppController
         $notificacione = $this->Notificaciones->newEntity();
         if ($this->request->is('post')) {
             $notificacione = $this->Notificaciones->patchEntity($notificacione, $this->request->data);
+            $notificacione['emisor'] = $this->Auth->user('id');
+            $notificacione['leida'] = false;
             if ($this->Notificaciones->save($notificacione)) {
-                $this->Flash->success(__('The notificacione has been saved.'));
+                $this->Flash->success(__('Mensaje enviado.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The notificacione could not be saved. Please, try again.'));
+            $this->Flash->error(__('Error al enviar el mensaje'));
         }
         $users = $this->Notificaciones->Users->find('list');
         $this->set(compact('notificacione','users'));
