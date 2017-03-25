@@ -20,7 +20,7 @@ class NotificacionesController extends AppController
      {
      if(isset($user['role_id']) && $user['role_id'] == 3)
      {
-         if(in_array($this->request->action, ['view','add']))
+         if(in_array($this->request->action, ['view','add','index']))
          {
              return true;
          }
@@ -73,6 +73,8 @@ class NotificacionesController extends AppController
             $notificacione = $this->Notificaciones->patchEntity($notificacione, $this->request->data);
             $notificacione['emisor'] = $this->Auth->user('id');
             $notificacione['leida'] = false;
+            // debug($notificacione);
+            // exit();
             if ($this->Notificaciones->save($notificacione)) {
                 $this->Flash->success(__('Mensaje enviado.'));
 
