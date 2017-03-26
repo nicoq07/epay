@@ -1,18 +1,8 @@
 <div class="row well">
     <?= $this->element('volverAtras') ?>
     <div class="page-header">
-    <h3>Gestiones</h3>
-    <div class="row">
-       <?= $this->Form->create('Post', ['url' => ['action' => 'search']]) ?>
-            <div class ="col-lg-6">
-                <?= $this->Form->input('usuario_id',['label' => '' ,'type'=> 'select', 'options' => $users, 'empty'=> true, ]); ?>
-            </div>
-            <div class="col-lg-2">
-              <div    style="margin-top: 20px;">
-                 <?= $this->Form->button('Buscar', [ 'controller' => 'DeudasGestiones', 'action' => 'search' , 'type' => 'submit']);?>
-                  </div>
-            </div>
-               <?= $this->Form->end() ?>
+    <h3>Gestiones de <?= h($user->presentacion)?> , total de gestiones: <?= $this->Paginator->counter(['format' => '{{count}}']) ?></h3>
+
     </div>
     </div>
     <div class="table-responsive">
@@ -42,7 +32,6 @@
             </tbody>
         </table>
         <div>
-       <?= $this->element('footer') ?>
         </div>
       </div>
 </div>

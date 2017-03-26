@@ -178,6 +178,9 @@ Request::addDetector('tablet', function ($request) {
     return $detector->isTablet();
 });
 
+
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+
 /*
  * Enable immutable time objects in the ORM.
  *

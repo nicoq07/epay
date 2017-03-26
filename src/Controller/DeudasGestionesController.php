@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\TableRegistry;
+
 
 /**
  * DeudasGestiones Controller
@@ -31,8 +33,15 @@ class DeudasGestionesController extends AppController
     {
         $notAdmin = null;
         $notDeuda = null;
+
         if (!empty($idDeuda)) $notDeuda = ['deuda_id' => $idDeuda];
-        if ($this->Auth->user('role_id') !== 1 && $this->Auth->user('role_id') !== 2 ) $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
+
+        if ($this->Auth->user('role_id') !== 1 && $this->Auth->user('role_id') !== 2 )
+        {
+
+             $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
+        }
+
         $this->paginate = [
           'contain' => ['Deudas'],
           'conditions' => [$notDeuda ,$notAdmin],
@@ -42,9 +51,33 @@ class DeudasGestionesController extends AppController
 
         if (!empty($idDeuda)) $notDeuda = $deudasGestiones->toArray()[0]['deuda'];
 
+        $users = TableRegistry::get('Users');
+        $users = $users->find('list');
         $data = ['deudasGestiones' => $deudasGestiones,'deuda' =>
-                  $notDeuda];
+                  $notDeuda,'users' => $users];
         $this->set($data);
+
+    }
+    public function search()
+    {
+      if (!empty($this->request->data['usuario_id']))
+      {
+        $user_id = $this->request->data['usuario_id'];
+         $this->paginate = [
+           'contain' => ['Deudas'],
+           'conditions' => ['Deudas.usuario_id' => $user_id],
+           'order' => ['DeudasGestiones.modified' => 'desc'],
+           'limit' => 9999];
+         $deudasGestiones = $this->paginate($this->DeudasGestiones);
+         $users = TableRegistry::get('Users');
+         $user = $users->get($user_id);
+         $data = ['deudasGestiones' => $deudasGestiones,'user' => $user];
+         $this->set($data);
+      }
+      else {
+          return $this->redirect(['action' => 'index']);
+      }
+
 
     }
 
