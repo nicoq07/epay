@@ -24,8 +24,9 @@
                 <div class="col-sm-12">
 
                     <div class="btn-group chat-toolbar" role="group" aria-label="...">
+                       <?php if($current_user['role_id'] == 1 || $current_user['role_id'] == 2): ?>
                         <?=  $this->Html->link(' Nuevo mensaje', ['controller' => 'Notificaciones', 'action' => 'add'],['class' => 'btn btn-default ticket-option fa fa-pencil ']) ?>
-
+                        <?php endif; ?>
 
                         <!-- <button id="chat-invite" class="btn btn-default ticket-option" type="button">
                           <i class="glyphicon glyphicon-plus"></i> Invite
