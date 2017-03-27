@@ -209,55 +209,131 @@ class DeudasController extends AppController
 
     public function asignar()
     {
-      $deudas = null;
-      $notAdmin = null;
-      if ($this->Auth->user('role_id') !== 1) $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
-        $this->paginate = [
-          'contain' => ['Deudores', 'Carteras', 'Users','EstadosDeudas'],
-          //'conditions' => [$notAdmin,'Deudas.active' =,''> '1'],
-          'order' => ['id' => 'desc'],
-          'limit' => 100
-        ];
+      // $deudas = null;
+      // $notAdmin = null;
+      // if ($this->Auth->user('role_id') !== 1) $notAdmin = ['Deudas.usuario_id' => $this->Auth->user('id')];
+      //   $this->paginate = [
+      //     'contain' => ['Deudores', 'Carteras', 'Users','EstadosDeudas'],
+      //     //'conditions' => [$notAdmin,'Deudas.active' =,''> '1'],
+      //     'order' => ['id' => 'desc'],
+      //     'limit' => 100
+      //   ];
+      //
+      // if ($this->request->is(['patch', 'post', 'put']))
+      // {
+      //     $user = $this->request->data['usuario_id'];
+      //     if (empty($this->request->data['usuario_id']))
+      //     {
+      //       $user = null;
+      //     }
+      //
+      //     if (empty($this->request->data['deudas']))
+      //     {
+      //       $this->Flash->error(__('Debe seleccionar alguna deuda para asignar'));
+      //     }
+      //     else {
+      //       $idDeudas = $this->request->data['deudas'];
+      //       $deudasTable = TableRegistry::get('Deudas');
+      //       $userTable = TableRegistry::get('Users');
+      //       $usuario = $userTable->get($user);
+      //       $connection = ConnectionManager::get('default');
+      //       $desc = 'Caso asignado a '.$usuario->presentacion . ' el día :'. date('d-m-Y');
+      //       foreach ($idDeudas as $id)
+      //       {
+      //           $deuda = $deudasTable->get($id);
+      //           $deuda['usuario_id'] = $user;
+      //           $deudasTable->save($deuda);
+      //           $connection->insert('deudas_gestiones', [
+      //               'deuda_id' => $id,
+      //               'descripcion' => $desc,
+      //               'modified' => new \DateTime('now'),
+      //               'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
+      //       }
+      //     }
+      //
+      //
+      // }
+      //
+      // $deudas = $this->paginate($this->Deudas);
+      // $users = $this->Deudas->Users->find('list');
+      // $this->set(compact('deudas','users'));
+      $connection = ConnectionManager::get('default');
+      $uploadFile = 'uploads/files';
+      $uploadName = '';
+      $deuda = $this->Deudas->newEntity();
+      $id = null;
+      if ($this->request->is('post')) {
 
-      if ($this->request->is(['patch', 'post', 'put']))
-      {
-          $user = $this->request->data['usuario_id'];
-          if (empty($this->request->data['usuario_id']))
-          {
-            $user = null;
-          }
-
-          if (empty($this->request->data['deudas']))
-          {
-            $this->Flash->error(__('Debe seleccionar alguna deuda para asignar'));
-          }
-          else {
-            $idDeudas = $this->request->data['deudas'];
-            $deudasTable = TableRegistry::get('Deudas');
-            $userTable = TableRegistry::get('Users');
-            $usuario = $userTable->get($user);
-            $connection = ConnectionManager::get('default');
-            $desc = 'Caso asignado a '.$usuario->presentacion . ' el día :'. date('d-m-Y');
-            foreach ($idDeudas as $id)
+            if(!empty($this->request->data['file']['name']))
             {
-                $deuda = $deudasTable->get($id);
-                $deuda['usuario_id'] = $user;
-                $deudasTable->save($deuda);
-                $connection->insert('deudas_gestiones', [
-                    'deuda_id' => $id,
-                    'descripcion' => $desc,
-                    'modified' => new \DateTime('now'),
-                    'created' => new \DateTime('now')], ['created' => 'datetime' , 'modified' => 'datetime']);
+
+              $uploadName = $this->request->data['file']['name'];
+               $uploadFile .= $uploadName;
+
+
+              if(!move_uploaded_file($this->request->data['file']['tmp_name'],$uploadFile))
+              {
+                 $this->Flash->error("Tenemos un problema para cargar el archivo");
+              }
             }
-          }
 
 
-      }
+              if (file_exists($uploadFile))
+              {
+                $connection->begin();
+                $excelReader = \PHPExcel_IOFactory::createReaderForFile($uploadFile);
+                $excelObj = $excelReader->load($uploadFile);
+                $worksheet = $excelObj->getSheet(0);
+                $lastRow = $worksheet->getHighestRow();
+                $hoja = null;
+                for ($row = 2; $row <= $lastRow; $row++)
+                {
+                  $cantDeudas = $row;
+                  //deudor
+                  //pregunto si existe el deudor con dni tanto
+                    $dni = !empty($worksheet->getCell('A'.$row)->getValue()) ? $worksheet->getCell('A'.$row)->getValue() : 0;
+                  $resultId =  $connection->query('SELECT Id FROM deudores WHERE dni = '.$dni);
+                  //debug($resultId->fetchAll('assoc')[0]['Id']);
+                  $id = $resultId->fetchAll('assoc')[0]['Id'];
 
-      $deudas = $this->paginate($this->Deudas);
-      $users = $this->Deudas->Users->find('list');
-      $this->set(compact('deudas','users'));
+                  //si el count es 0, osea no trajo nada lo voy a insertar
+                  // si el count es 1, ese deudor ya existe no lo inserto pero cargo sus deudas.
+                  //sumo uno a DEudores nuevos
 
+                  $operador = !empty($worksheet->getCell('B'.$row)->getValue()) ? $worksheet->getCell('B'.$row)->getValue() : 0;
+                  $resultIdOpe =  $connection->query("SELECT id FROM users WHERE CONCAT(nombre,'". " ',apellido) LIKE '$operador'");
+                  //debug($resultId->fetchAll('assoc')[0]['Id']);
+                   $idOpe = $resultIdOpe->fetchAll('assoc')[0]['id'];
+                  // debug($resultIdOpe->fetchAll('assoc')[0]['id']);
+                  // exit();
+                  // $connection->update('articles', ['title' => 'New title'], ['id' => 10]);
+                 $connection->update('deudas', [
+                          'usuario_id' => $idOpe],
+                          ['deudor_id' => $id]);
+
+
+
+
+                  ///Acá el Duedor ya exite y solo le cargo la info de la deuda
+                } // fin FOR
+                  //   $connection->commit();
+
+                }
+                            $connection->commit();
+                            $this->Flash->success("Asignacion realizada");
+
+
+
+
+                // $this->Flash->default("Confirma: Total deudas: $cantDeudas , Total Capital Inicial: $cantCapIni , Total Actualizado : $cantTotal  Deudores nuevos : $deudoresNuevos , Casos asignados: $asignaciones ? ");
+
+
+
+
+
+    }//fin del request->post
+
+      $this->set(compact('deuda'));
 
 
     }

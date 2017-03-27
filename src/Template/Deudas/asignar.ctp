@@ -1,20 +1,34 @@
-<div class="row">
+<!-- <div class="row">
     <?= $this->element('volverAtras') ?>
     <div class="page-header">
     <h3>Asignación de deudas </h3>
     </div>
-    <div class ="col-lg-12">
-                <h4>Asignar a:</h4>
-            </div> 
-     <?= $this->Form->create($deudas) ?>   
-    <div class="row"> 
-            <div class ="col-lg-8">
+
+     <?= $this->Form->create($deudas) ?>
+     <div class="row">
+             <div class ="col-lg-3">
+               Buscar por Asignado
+             </div>
+             <div class ="col-lg-6">
+                 <?= $this->Form->input('search',['label' => '' , 'type'=> 'select', 'options' => $users, 'empty'=> true, ]); ?>
+             </div>
+             <div class ="col-lg-3 ">
+                 <?= $this->Form->button('Buscar', [ 'controller' => 'Deudas', 'action' => 'asignar' , 'type' => 'submit']);?>
+             </div>
+     </div>
+
+    <div class="row">
+            <div class ="col-lg-3">
+              Asignar a
+            </div>
+            <div class ="col-lg-6">
                 <?= $this->Form->input('usuario_id',['label' => '' , 'type'=> 'select', 'options' => $users, 'empty'=> true, ]); ?>
             </div>
-            <div class ="col-lg-4 busqueda">
+            <div class ="col-lg-3 ">
                 <?= $this->Form->button('Asignar', [ 'controller' => 'Deudas', 'action' => 'asignar' , 'type' => 'submit']);?>
             </div>
     </div>
+  <div class="page-header"> </div>
 
     <div class="table-responsive">
     <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
@@ -56,4 +70,22 @@
     </div>
     <?= $this->Form->end() ?>
     <?= $this->element('footer') ?>
+</div> -->
+<?= $this->element('volverAtras') ?>
+<div class = "well">
+  <div> Archivo para importar Excel <br>
+        Columna A : DNI deudor <br>
+        Columna B: Nombre operador
+        <b> Datos a partir de la fila 2! </b>
+      </div>
+  <?= $this->Form->create($deuda, ['type' => 'file']); ?>
+  <?= $this->Form->input('file',['label'=>'', 'type' => 'file','enctype' => 'multipart/form-data']); ?>
+    <div class="container-fluid">
+
+            <div class="col-xl-2">
+                <?= $this->Form->submit('Subir', ['type'=>'submit', 'class' => 'form-controlbtn btn-info']); ?>
+            </div>
+
+  </div>
+  <?= $this->Form->end(); ?>
 </div>
